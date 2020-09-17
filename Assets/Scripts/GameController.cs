@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.AbstractWiresEffect.Scripts;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.iOS;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -17,21 +19,19 @@ public class GameController : MonoBehaviour
 
     public Camera mainCamera;
 
-    public TextAsset script;
+    public float ballSpeed = 3;
 
-    public float ballSpeed = 2;
+    // public float verticalSpeed = 1;
 
-    public float verticalSpeed = 1;
-
-    public float tolerant = 0.3f;
+    // public float tolerant = 0.3f;
 
     public AudioSource bgmAudio;
     
     public AudioSource failAudio;
 
-    public bool auto = false;
-
     public Text countDown;
+
+    public TextAsset defaultScript;
     
     private float _bpm;
     private float _initialSpace;
@@ -90,7 +90,15 @@ public class GameController : MonoBehaviour
             {
                 if (_mousePosition != new Vector3())
                 {
-                    ball.transform.position += new Vector3(0, 0, Time.deltaTime * (_mousePosition - Input.mousePosition).x * 0.5f);  // 阻碍一下
+                    if (SystemInfo.deviceType == DeviceType.Desktop)
+                    {
+                        ball.transform.position += new Vector3(0, 0, Time.deltaTime * (_mousePosition - Input.mousePosition).x);  // 阻碍一下
+                    }
+                    else
+                    {
+                        ball.transform.position += new Vector3(0, 0, Time.deltaTime * (_mousePosition - Input.mousePosition).x / Screen.width * 200f);  // 阻碍一下
+                    }
+                    
                 }
                 _mousePosition = Input.mousePosition;
             }else if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonDown(0))
@@ -157,7 +165,11 @@ public class GameController : MonoBehaviour
 
     private void LoadScript()
     {
-        var textList = script.text.Split('\n');
+        var textList = (StaticClass.Script ? StaticClass.Script : defaultScript).text.Split('\n');
+        if (StaticClass.Bgm)
+        {
+            bgmAudio.clip = StaticClass.Bgm;
+        }
         _bpm = float.Parse(textList[0].Split(' ')[0]);  // 182节/分钟的话  
         _initialSpace = float.Parse(textList[0].Split(' ')[1]);
         
@@ -239,12 +251,16 @@ public class GameController : MonoBehaviour
         if (_nextNoteIndex <= 0)
         {
             // 第一次做
-            _noteSteps = new List<GameObject> {step};
-            for (var i = 1; i < Math.Max(10, _notes.Count + 1); i++)
+            var firstStep = Instantiate(step);
+            firstStep.SetActive(true);
+            _noteSteps = new List<GameObject> {firstStep};
+            
+            for (var i = 1; i < Math.Min(10, _notes.Count + 1); i++)
             {
                 var s = Instantiate(step);
                 var last = _noteSteps[i - 1].transform.position;
                 s.transform.position = new Vector3(last.x + ballSpeed * _notes[i - 1] / _bpm * 60.0f, last.y,  Random.value < 0.7f ? ((i % 2 == 0 ? 0 : 2f) + Random.value * 1f) : Random.value * 3);
+                s.SetActive(true);
                 _noteSteps.Add(s);
             }
         }
@@ -256,7 +272,8 @@ public class GameController : MonoBehaviour
             }
             var s = Instantiate(step);
             var last = _noteSteps[_noteSteps.Count - 1].transform.position;
-            s.transform.position = new Vector3(last.x + ballSpeed * _notes[_noteSteps.Count - 1] / _bpm * 60.0f, last.y, last.z + (_noteSteps.Count % 2 == 0 ? -2 : 2));
+            s.transform.position = new Vector3(last.x + ballSpeed * _notes[_noteSteps.Count - 1] / _bpm * 60.0f, last.y, Random.value < 0.7f ? ((_noteSteps.Count % 2 == 1 ? 0 : 2f) + Random.value * 1f) : Random.value * 3);
+            s.SetActive(true);
             _noteSteps.Add(s);
         }
     }
@@ -264,7 +281,7 @@ public class GameController : MonoBehaviour
     private void Fly()
     {
         var nextPos = _nextStep.transform.position;
-        nextPos = new Vector3(nextPos.x, _initialBallHeight, ball.transform.position.z);
+        nextPos = StaticClass.Auto ? new Vector3(nextPos.x, _initialBallHeight, nextPos.z) : new Vector3(nextPos.x, _initialBallHeight, ball.transform.position.z);
         ball.transform.DOKill();
         var dur = _nextNoteIndex <= 0 ? _initialSpace : _nextNoteTime - Time.time;
         
@@ -274,7 +291,7 @@ public class GameController : MonoBehaviour
         {
             var thisPos = ball.transform.position;
             _time = dur;
-            _g = g / _notes[_nextNoteIndex - 1];
+            _g = g / _notes[_nextNoteIndex - 1] * _bpm / 90f;
             // 通过一个式子计算初速度
             _speed = new Vector3((nextPos.x - thisPos.x) / _time,
                 (nextPos.y - thisPos.y) / _time - 0.5f * _g * _time, (nextPos.z - thisPos.z) / _time);
@@ -286,6 +303,11 @@ public class GameController : MonoBehaviour
         // 自动算下一个
         // _lastNodeTime = _nextNoteTime;
         // 走你
+        if (!ball.GetComponent<WiresConnector>().enabled)
+        {
+            ball.GetComponent<WiresConnector>().enabled = true;
+        }
+        
         StartCoroutine(DoAutoJump(dur));
         
     }
@@ -322,6 +344,8 @@ public class GameController : MonoBehaviour
             }
             else
             {
+                // 可以销毁
+                Destroy(_nextStep,2.0f);
                 DoNext();
             }
         }

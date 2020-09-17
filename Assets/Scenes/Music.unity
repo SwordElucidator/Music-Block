@@ -221,7 +221,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &484120007
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -522,13 +522,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.05000238, y: 0.70533663, z: -0.05000238, w: 0.70533663}
-  m_LocalPosition: {x: -6.55, y: 2.47, z: 1.5}
+  m_LocalRotation: {x: 0.084398165, y: 0.702052, z: -0.084398165, w: 0.702052}
+  m_LocalPosition: {x: -6.4, y: 2.85, z: 1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 8.11, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 13.71, y: 90, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -984,6 +984,7 @@ GameObject:
   - component: {fileID: 1517354655}
   - component: {fileID: 1517354659}
   - component: {fileID: 1517354657}
+  - component: {fileID: 1517354660}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -999,7 +1000,7 @@ TrailRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1517354653}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -1032,7 +1033,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.8
+  m_Time: 1
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -1092,10 +1093,10 @@ TrailRenderer:
     numCornerVertices: 0
     numCapVertices: 0
     alignment: 0
-    textureMode: 0
+    textureMode: 1
     shadowBias: 0.5
     generateLightingData: 0
-  m_MinVertexDistance: 0.5
+  m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
 --- !u!199 &1517354655
@@ -5941,6 +5942,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1517354660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517354653}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb8a810ae4045342a7b72f088142ca5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WiresParticles: {fileID: 1598713955540352, guid: c8cd2b5092c2e904bbdb7d672384438c, type: 3}
+  LineRendererPrefab: {fileID: 1782971981634890, guid: 01d187e0b0390c24e891b017793cc513, type: 3}
+  UseSkinnedMeshRenderer: 1
+  TargetSkinnedMeshRenderer: {fileID: 0}
+  MaxDistance: 2
+  MaxConnections: 8
+  MaxLineRenderers: 100
 --- !u!1 &2046051960
 GameObject:
   m_ObjectHideFlags: 0
@@ -6068,14 +6088,11 @@ MonoBehaviour:
   ball: {fileID: 1517354653}
   step: {fileID: 484120005}
   mainCamera: {fileID: 963194227}
-  script: {fileID: 4900000, guid: e2b97ac25578d4bb1aa569501df5eaa9, type: 3}
-  ballSpeed: 6
-  verticalSpeed: 1
-  tolerant: 0.3
+  ballSpeed: 10
   bgmAudio: {fileID: 1154368007}
   failAudio: {fileID: 1362807852}
-  auto: 0
   countDown: {fileID: 106202945}
+  defaultScript: {fileID: 4900000, guid: e2b97ac25578d4bb1aa569501df5eaa9, type: 3}
   g: -15
   feedbackCharSize: 0.2
 --- !u!4 &2052768755
