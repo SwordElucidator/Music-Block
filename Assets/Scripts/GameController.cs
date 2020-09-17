@@ -259,7 +259,8 @@ public class GameController : MonoBehaviour
             {
                 var s = Instantiate(step);
                 var last = _noteSteps[i - 1].transform.position;
-                s.transform.position = new Vector3(last.x + ballSpeed * _notes[i - 1] / _bpm * 60.0f, last.y,  Random.value < 0.7f ? ((i % 2 == 0 ? 0 : 2f) + Random.value * 1f) : Random.value * 3);
+                var isSmallNote = _notes[i - 1] < 1;
+                s.transform.position = new Vector3(last.x + ballSpeed * _notes[i - 1] / _bpm * 60.0f, last.y,  isSmallNote ? (i % 2 == 0 ? 1 : 1.5f) + Random.value * 0.5f : Random.value < 0.7f ? ((i % 2 == 0 ? 0 : 2f) + Random.value * 1f) : Random.value * 3);
                 s.SetActive(true);
                 _noteSteps.Add(s);
             }
@@ -272,7 +273,8 @@ public class GameController : MonoBehaviour
             }
             var s = Instantiate(step);
             var last = _noteSteps[_noteSteps.Count - 1].transform.position;
-            s.transform.position = new Vector3(last.x + ballSpeed * _notes[_noteSteps.Count - 1] / _bpm * 60.0f, last.y, Random.value < 0.7f ? ((_noteSteps.Count % 2 == 1 ? 0 : 2f) + Random.value * 1f) : Random.value * 3);
+            var isSmallNote = _notes[_noteSteps.Count - 1] < 1;
+            s.transform.position = new Vector3(last.x + ballSpeed * _notes[_noteSteps.Count - 1] / _bpm * 60.0f, last.y, isSmallNote ? (_noteSteps.Count % 2 == 1 ? 1 : 1.5f) + Random.value * 0.5f : Random.value < 0.7f ? ((_noteSteps.Count % 2 == 1 ? 0 : 2f) + Random.value * 1f) : Random.value * 3);
             s.SetActive(true);
             _noteSteps.Add(s);
         }
