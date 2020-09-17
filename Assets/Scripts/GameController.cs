@@ -341,6 +341,7 @@ public class GameController : MonoBehaviour
             {
                 _isGameOver = true;
                 countDown.text = "YOU WIN!";
+                StartCoroutine(GoBack());
             }
             else
             {
@@ -349,6 +350,12 @@ public class GameController : MonoBehaviour
                 DoNext();
             }
         }
+    }
+
+    private IEnumerator GoBack()
+    {
+        yield return new WaitForSeconds(2);
+        SceneManager.LoadScene("Title");
     }
 
     private void ShowFeedback(GameObject s, bool isPerfect=true)

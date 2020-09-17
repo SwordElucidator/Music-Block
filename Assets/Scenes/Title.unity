@@ -589,15 +589,19 @@ MonoBehaviour:
   names:
   - Faded
   - "\u5343\u672C\u685C"
+  - "E\u0301chame la Culpa"
   scripts:
   - {fileID: 4900000, guid: e2b97ac25578d4bb1aa569501df5eaa9, type: 3}
   - {fileID: 4900000, guid: 50a307f1f7ad740cea3e0b69d999f03c, type: 3}
+  - {fileID: 4900000, guid: de62ddd569d2a4baebbfd0a8ace4137a, type: 3}
   bgms:
   - {fileID: 8300000, guid: 258a78d8fb5a64cd682c96d250e389bd, type: 3}
   - {fileID: 8300000, guid: 9b6281c4b680c4f468bf5f592681ea93, type: 3}
+  - {fileID: 8300000, guid: 974fd04062ee24af68f9aa1279b82282, type: 3}
   images:
   - {fileID: 2800000, guid: ad7d63fca1bc14d7881c7e1bff2c7e4e, type: 3}
   - {fileID: 2800000, guid: 2fddfc30cec31473f870ee24e2795130, type: 3}
+  - {fileID: 2800000, guid: be42e7352cb974b98b045b3d01859cb8, type: 3}
   auto: 1
 --- !u!1 &962864310
 GameObject:

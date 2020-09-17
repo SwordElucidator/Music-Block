@@ -97,6 +97,7 @@
         </e>
         <e p="Text" t="Include">
           <e p="fade.txt" t="Include" />
+          <e p="Échame la Culpa.txt" t="Include" />
           <e p="千本桜.txt" t="Include" />
         </e>
         <e p="TextMesh Pro" t="Include">
