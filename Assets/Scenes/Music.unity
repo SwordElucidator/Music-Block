@@ -1000,7 +1000,7 @@ TrailRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1517354653}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -1042,7 +1042,7 @@ TrailRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.085106306
+        value: 0.056533568
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -5956,11 +5956,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WiresParticles: {fileID: 1598713955540352, guid: c8cd2b5092c2e904bbdb7d672384438c, type: 3}
   LineRendererPrefab: {fileID: 1782971981634890, guid: 01d187e0b0390c24e891b017793cc513, type: 3}
-  UseSkinnedMeshRenderer: 1
+  UseSkinnedMeshRenderer: 0
   TargetSkinnedMeshRenderer: {fileID: 0}
   MaxDistance: 2
-  MaxConnections: 8
-  MaxLineRenderers: 100
+  MaxConnections: 6
+  MaxLineRenderers: 5
 --- !u!1 &2046051960
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,9 +4,6 @@
     <list default="true" id="2be46bf8-7c84-4fb9-a53d-7124be47b3a6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Music.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Music.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Title.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Title.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +18,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Starter.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/GrabSquaresEffect/Shaders/GrabSquares.shader" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/SpaceSkies Free/Demo/Scripts/SkyboxChanger.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scenes/Music.unity" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3D496C8E-82AE-4EBD-B5D2-754C57C486CF/35/e32fa418/TextAsset.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Star.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GameController.cs" root0="FORCE_HIGHLIGHTING" />
@@ -82,7 +80,7 @@
       <option name="presentableId" value="Default" />
       <updated>1598874129648</updated>
       <workItem from="1598874131296" duration="21429000" />
-      <workItem from="1600224861841" duration="24659000" />
+      <workItem from="1600224861841" duration="25708000" />
     </task>
     <servers />
   </component>
