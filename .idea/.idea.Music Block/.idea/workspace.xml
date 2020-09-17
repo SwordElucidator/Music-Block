@@ -3,7 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="2be46bf8-7c84-4fb9-a53d-7124be47b3a6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ElementalOrbs/Assets/Materials/ElectricOrb.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ElementalOrbs/Assets/Materials/ElectricOrb.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/GrabSquaresEffect/Materials/BlueLineRendererMedium.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/GrabSquaresEffect/Materials/BlueLineRendererMedium.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Materials/Trail.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Materials/Trail.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Music.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Music.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Title.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Title.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Starter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Starter.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,10 +34,10 @@
       <list>
         <option value="$PROJECT_DIR$/Assets/Text/fade.txt" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Start.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/Starter.cs" />
         <option value="$PROJECT_DIR$/Assets/Text/千本桜.txt" />
         <option value="$PROJECT_DIR$/Assets/Text/Échame la Culpa.txt" />
         <option value="$PROJECT_DIR$/Assets/Scripts/GameController.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Starter.cs" />
       </list>
     </option>
   </component>
@@ -81,6 +87,7 @@
       <updated>1598874129648</updated>
       <workItem from="1598874131296" duration="21429000" />
       <workItem from="1600224861841" duration="25708000" />
+      <workItem from="1600336461278" duration="2692000" />
     </task>
     <servers />
   </component>
@@ -94,7 +101,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

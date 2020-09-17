@@ -146,7 +146,7 @@ public class GameController : MonoBehaviour
     private void DoNext()
     {
         _nextNoteTime += _notes[_nextNoteIndex] / _bpm * 60.0f;
-        _noteSteps[_nextNoteIndex].GetComponent<MeshRenderer>().material.mainTextureScale = new Vector2(1, 1);
+        _noteSteps[_nextNoteIndex].GetComponent<MeshRenderer>().material.mainTextureScale = new Vector2(0.04f, 1);
         _nextNoteIndex += 1;
         _nextStep = _noteSteps[_nextNoteIndex];
         StartCoroutine(ShowParticles());

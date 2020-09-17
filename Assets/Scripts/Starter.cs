@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -18,7 +19,7 @@ public class Starter : MonoBehaviour
 {
 
     public GameObject firstButton;
-    public Transform canvas;
+    public Transform parent;
     public string[] names;
     public TextAsset[] scripts;
     public AudioClip[] bgms;
@@ -29,14 +30,15 @@ public class Starter : MonoBehaviour
     {
         for (var i = 0; i < names.Length; i++)
         {
-            var b = Instantiate(firstButton, canvas, true);
+            var b = Instantiate(firstButton, parent, true);
             b.transform.Find("Name").GetComponent<Text>().text = names[i];
             var pos = b.transform.position;
             b.transform.position = new Vector3(pos.x, pos.y - i * 240, pos.z);
             b.transform.Find("Image").GetComponent<RawImage>().texture = images[i];
             b.GetComponent<Button>().onClick.AddListener(StartGame);
         }
-        firstButton.SetActive(false);
+
+        var rect = parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 270 + names.Length * 240);
     }
 
     private void StartGame()
