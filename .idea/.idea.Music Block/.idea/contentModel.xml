@@ -5,6 +5,7 @@
     <e p="$USER_HOME$/Library/Caches/Rider2019.3/resharper-host/local/Transient/ReSharperHost/v193/SolutionCaches/_Music Block.1685085971.00" t="ExcludeRecursive" />
     <e p="$PROJECT_DIR$" t="IncludeRecursive">
       <e p="Assembly-CSharp-Editor-firstpass.csproj" t="IncludeRecursive" />
+      <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp-firstpass.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
@@ -97,6 +98,7 @@
         </e>
         <e p="Text" t="Include">
           <e p="fade.txt" t="Include" />
+          <e p="V.A. - snow storm -euphoria-.txt" t="Include" />
           <e p="Échame la Culpa.txt" t="Include" />
           <e p="千本桜.txt" t="Include" />
         </e>
@@ -129,6 +131,36 @@
           </e>
           <e p="Sprites" t="Include">
             <e p="EmojiOne Attribution.txt" t="Include" />
+          </e>
+        </e>
+        <e p="Trails FX" t="Include">
+          <e p="Demo" t="Include">
+            <e p="Scripts" t="Include">
+              <e p="MoveObject.cs" t="Include" />
+              <e p="RotateObject.cs" t="Include" />
+              <e p="Shooter.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Editor" t="Include">
+            <e p="TrailEffectEditor.cs" t="Include" />
+            <e p="TrailEffectProfileEditor.cs" t="Include" />
+          </e>
+          <e p="ReadMe.txt" t="Include" />
+          <e p="Resources" t="Include">
+            <e p="TrailsFX" t="Include">
+              <e p="TrailClearMask.shader" t="Include" />
+              <e p="TrailEffectClone.shader" t="Include" />
+              <e p="TrailEffectColor.shader" t="Include" />
+              <e p="TrailEffectDistort.shader" t="Include" />
+              <e p="TrailEffectLaser.shader" t="Include" />
+              <e p="TrailEffectOutline.shader" t="Include" />
+              <e p="TrailEffectTextureStamp.shader" t="Include" />
+              <e p="TrailMask.shader" t="Include" />
+            </e>
+          </e>
+          <e p="Scripts" t="Include">
+            <e p="TrailEffect.cs" t="Include" />
+            <e p="TrailEffectProfile.cs" t="Include" />
           </e>
         </e>
       </e>

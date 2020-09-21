@@ -2,14 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2be46bf8-7c84-4fb9-a53d-7124be47b3a6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ElementalOrbs/Assets/Materials/ElectricOrb.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ElementalOrbs/Assets/Materials/ElectricOrb.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/GrabSquaresEffect/Materials/BlueLineRendererMedium.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/GrabSquaresEffect/Materials/BlueLineRendererMedium.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Materials/Trail.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Materials/Trail.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Music.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Music.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Title.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Title.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Starter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Starter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Text/Échame la Culpa.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Text/Échame la Culpa.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Text/千本桜.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Text/千本桜.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,9 +34,10 @@
       <list>
         <option value="$PROJECT_DIR$/Assets/Text/fade.txt" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Start.cs" />
+        <option value="$PROJECT_DIR$/Assets/Text/V.A. - snow storm -euphoria-.txt" />
         <option value="$PROJECT_DIR$/Assets/Text/千本桜.txt" />
-        <option value="$PROJECT_DIR$/Assets/Text/Échame la Culpa.txt" />
         <option value="$PROJECT_DIR$/Assets/Scripts/GameController.cs" />
+        <option value="$PROJECT_DIR$/Assets/Text/Échame la Culpa.txt" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Starter.cs" />
       </list>
     </option>
@@ -87,7 +88,7 @@
       <updated>1598874129648</updated>
       <workItem from="1598874131296" duration="21429000" />
       <workItem from="1600224861841" duration="25708000" />
-      <workItem from="1600336461278" duration="2692000" />
+      <workItem from="1600336461278" duration="15908000" />
     </task>
     <servers />
   </component>
@@ -108,5 +109,11 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="387" y="160" width="672" height="678" key="search.everywhere.popup" timestamp="1600680474448">
+      <screen x="0" y="23" width="1440" height="816" />
+    </state>
+    <state x="387" y="160" width="672" height="678" key="search.everywhere.popup/0.23.1440.816@0.23.1440.816" timestamp="1600680474448" />
   </component>
 </project>

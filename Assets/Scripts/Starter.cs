@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
@@ -21,10 +22,13 @@ public class Starter : MonoBehaviour
     public GameObject firstButton;
     public Transform parent;
     public string[] names;
+    public int[] hardness;
     public TextAsset[] scripts;
     public AudioClip[] bgms;
     public Texture[] images;
-    public bool auto = false;
+
+    public Toggle autoToggle;
+    // public bool auto = false;
 
     void Start()
     {
@@ -32,6 +36,14 @@ public class Starter : MonoBehaviour
         {
             var b = Instantiate(firstButton, parent, true);
             b.transform.Find("Name").GetComponent<Text>().text = names[i];
+            const string s = "★";
+            var startString = "";
+            for (var j = 0; j < hardness[i]; j++)
+            {
+                startString += s;
+            }
+
+            b.transform.Find("Star").GetComponent<Text>().text = startString;
             var pos = b.transform.position;
             b.transform.position = new Vector3(pos.x, pos.y - i * 240, pos.z);
             b.transform.Find("Image").GetComponent<RawImage>().texture = images[i];
@@ -54,7 +66,7 @@ public class Starter : MonoBehaviour
                 // 
                 StaticClass.Bgm = bgm;
                 StaticClass.Script = script;
-                StaticClass.Auto = auto;
+                StaticClass.Auto = autoToggle.isOn;
                 SceneManager.LoadScene("Music");
                 break;
             }
