@@ -55,9 +55,10 @@ public class GameController : MonoBehaviour
     private float _initialBallHeight = 0;
     private ParticleSystem _ps;
     private float _lastNodeTime;
-    private float _emptyAudioTime = 0;
+    // private float _emptyAudioTime = 0;
     private float _countdownStart = 0;
     private Vector3 _mousePosition = new Vector3();
+    private double _scheduledBgmStartTime;
     
     
     // 运动模型
@@ -120,7 +121,7 @@ public class GameController : MonoBehaviour
                 {
                     // 切记：z位置范围为0~3
                     var radius = (_nextStep.transform.localScale.z / 2);
-                    var r = (3f + radius * 2) / Screen.width;
+                    var r = (3f + radius * 2) / Screen.width * (1f + StaticClass.Sensibility * 2);  // 变化率
                     var max = 3f + radius;
                     var min = -radius;
                     if (_mousePosition != new Vector3())
@@ -207,6 +208,7 @@ public class GameController : MonoBehaviour
     private void LoadScript()
     {
         var textList = (StaticClass.Script ? StaticClass.Script : defaultScript).text.Split('\n');
+        const float emptyBgmTime = 1;
         if (StaticClass.Bgm)
         {
             bgmAudio.clip = StaticClass.Bgm;
@@ -223,18 +225,20 @@ public class GameController : MonoBehaviour
         }
         
         // 起步倒计时
-        if (_initialSpace < 60.0f / _bpm * 3)
+        if (_initialSpace + emptyBgmTime < 60.0f / _bpm * 3)
         {
-            // 小于早期节拍
-            _emptyAudioTime = 60.0f / _bpm * 3 - _initialSpace;
+            // 小于早期节拍   90(2秒） 0.18 + 1 < 2
+            // _emptyAudioTime = 60.0f / _bpm * 3 - _initialSpace;
+            bgmAudio.PlayScheduled(AudioSettings.dspTime + 60.0f / _bpm * 3 - _initialSpace);
             _initialSpace = 60.0f / _bpm * 3;
             _countdownStart = 0;
         }
         else
         {
-            _emptyAudioTime = 0;
-            _countdownStart = _initialSpace - 60.0f / _bpm * 3;
-
+            // _emptyAudioTime = emptyBgmTime;
+            _countdownStart = _initialSpace - 60.0f / _bpm * 3 + emptyBgmTime;
+            _initialSpace += emptyBgmTime;
+            bgmAudio.PlayScheduled(AudioSettings.dspTime + emptyBgmTime);
         }
         
         _notes = new List<float>();
@@ -264,18 +268,8 @@ public class GameController : MonoBehaviour
         _nextNoteIndex = 0;
         _nextNoteTime = _initialSpace + Time.time;
         _ps = ball.GetComponent<ParticleSystem>();
-        StartCoroutine(StartBgm());
         StartCoroutine(InitialNote());
         
-    }
-
-    private IEnumerator StartBgm()
-    {
-        if (_emptyAudioTime > 0)
-        {
-            yield return new WaitForSeconds(_emptyAudioTime);
-        }
-        bgmAudio.Play();
     }
 
     private IEnumerator InitialNote()
@@ -415,12 +409,12 @@ public class GameController : MonoBehaviour
         var ballPos = ball.transform.position;
         var dis = ballPos.z - blockPos.z;
         var radius = (_nextStep.transform.localScale.z / 2);
-        if (dis * dis > radius * radius * 1.5625f && _nextNoteIndex < _notes.Count)
+        if (dis * dis > radius * radius * 1.69f && _nextNoteIndex < _notes.Count)
         {
             // 更不容易死一点但...
             _isGameOver = true;
             _failed = true;
-            StartCoroutine(OnFail());
+            OnFail();
         }
         else
         {
@@ -439,7 +433,16 @@ public class GameController : MonoBehaviour
             if (_nextNoteIndex >= _notes.Count)
             {
                 _isGameOver = true;
-                countDown.text = "YOU WIN!";
+                var newRecord = HandleScore();
+                if (newRecord)
+                {
+                    countDown.text = "FC New Record!!!\n" + score.text;
+                }
+                else
+                {
+                    countDown.text = "FULL COMBO!!!\n" + score.text;
+                }
+                
                 StartCoroutine(GoBack());
             }
             else
@@ -462,39 +465,62 @@ public class GameController : MonoBehaviour
         _charSize = 0;
         _currentCharMesh = s.transform.Find("Feedback").GetComponent<TextMesh>();
         _currentCharMesh.characterSize = 0;
-        _score += 1000000f / _notes.Count;
-        _combos += 1;
-        score.text = Convert.ToInt32(_score).ToString().PadLeft(7, '0');
-        combos.text = _combos.ToString() + (_combos > 1 ? " Combos" : "Combo");
         if (status == 3)
         {
             _currentCharMesh.text = "Perfect!";
             _currentCharMesh.color = new Color(0.95f, 0.69f, 0.15f);
+            _score += 1000000f / _notes.Count;
         }
         else if (status == 2)
         {
             _currentCharMesh.text = "Great!";
             _currentCharMesh.color = new Color(0.21f, 0.63f, 0.8f);
+            _score += 1000000f / _notes.Count * 0.7f;
         }
         else
         {
             _currentCharMesh.text = "Ok";
             _currentCharMesh.color = new Color(0.6f, 0.8f, 0.5f);
+            _score += 1000000f / _notes.Count * 0.4f;
         }
+        
+        _combos += 1;
+        score.text = Convert.ToInt32(_score).ToString().PadLeft(7, '0');
+        combos.text = _combos.ToString() + (_combos > 1 ? " Combos" : "Combo");
 
         _charLeftTime = 0.3f;
         _charEnlargeSpeed = feedbackCharSize / _charLeftTime;
     }
     
 
-    private IEnumerator OnFail()
+    private void OnFail()
     {
         ball.transform.DOKill();
         bgmAudio.Stop();
         failAudio.Play();
+        var newRecord = HandleScore();
+        if (newRecord)
+        {
+            countDown.text = "NEW RECORD!!!\n" + score.text;
+        }
+        else
+        {
+            countDown.text = score.text;
+        }
         var pos = ball.transform.position;
         ball.transform.DOMove(new Vector3(pos.x, -100, pos.z), 2);
-        yield return new WaitForSeconds(2);
-        SceneManager.LoadScene("Music");
+        StartCoroutine(GoBack());
+    }
+
+    private bool HandleScore()
+    {
+        if (StaticClass.Auto) return false;
+        if (PlayerPrefs.GetFloat("high-score-" + StaticClass.Name) < _score)
+        {
+            PlayerPrefs.SetFloat("high-score-" + StaticClass.Name, _score);
+            return true;
+        }
+
+        return false;
     }
 }
