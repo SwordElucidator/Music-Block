@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2be46bf8-7c84-4fb9-a53d-7124be47b3a6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/indexLayout.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Title.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Title.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Starter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Starter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/OsuLoader.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/OsuLoader.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +87,7 @@
       <workItem from="1598874131296" duration="21429000" />
       <workItem from="1600224861841" duration="25708000" />
       <workItem from="1600336461278" duration="23470000" />
-      <workItem from="1601006095630" duration="7754000" />
+      <workItem from="1601006095630" duration="10156000" />
     </task>
     <servers />
   </component>
