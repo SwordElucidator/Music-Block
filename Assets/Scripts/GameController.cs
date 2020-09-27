@@ -43,7 +43,7 @@ public class GameController : MonoBehaviour
     
     private float _bpm;
     private float _initialSpace;
-    private List<float> _notes;
+    private List<float> _notes = new List<float>();
     private List<GameObject> _noteSteps;
     private int _nextNoteIndex = -1;
     private float _nextNoteTime;
@@ -79,6 +79,9 @@ public class GameController : MonoBehaviour
     private TextMesh _currentCharMesh;
     private float _lastNotePos = -1;
     private bool _waterfallPlus = true;
+    
+    // osu模型
+    private SongInfo _osuSongInfo;
     
     // Start is called before the first frame update
     void Start()
@@ -208,15 +211,33 @@ public class GameController : MonoBehaviour
 
     private void LoadScript()
     {
+        const float emptyBgmTime = 1;
         if (StaticClass.IsOsu)
         {
-            // var info = StaticClass.Loader.DeepRead();
-            // bgmAudio.clip = StaticClass.Loader.GetBgm(info.AudioFilename);
+            _osuSongInfo = StaticClass.Loader.DeepRead();
+            bgmAudio.clip = StaticClass.Loader.GetBgm(_osuSongInfo.AudioFilename);
+            _bpm = _osuSongInfo.TimingPoints[0].bpm;  // TODO
+            // _osuSongInfo.AudioLeadIn;   概念：audio进入时间
+            
+            // _initialSpace 从播放audio起，第一个音符前的等待时间
+            _initialSpace = _osuSongInfo.Notes[0] / 1000f;
+            // TODO 球速
+            ballSpeed = _osuSongInfo.ApproachRate * 2;
+            
+            var lastTime = _initialSpace;
+            var first = true;
+            foreach (var i in _osuSongInfo.Notes)
+            {
+                // 这是多少拍子？ 60 / bpm
+                if (first) {first = false; continue;}
+                _notes.Add((i / 1000f - lastTime) / 60 * _bpm);
+                lastTime = i / 1000f;
+            }
         }
         else
         {
             var textList = (StaticClass.Script ? StaticClass.Script : defaultScript).text.Split('\n');
-            const float emptyBgmTime = 1;
+            
             if (StaticClass.Bgm)
             {
                 bgmAudio.clip = StaticClass.Bgm;
@@ -231,29 +252,28 @@ public class GameController : MonoBehaviour
                 // 控制球速
                 ballSpeed = float.Parse(textList[0].Split(' ')[2], ci);
             }
-        
-            // 起步倒计时
-            if (_initialSpace + emptyBgmTime < 60.0f / _bpm * 3)
-            {
-                // 小于早期节拍   90(2秒） 0.18 + 1 < 2
-                // _emptyAudioTime = 60.0f / _bpm * 3 - _initialSpace;
-                bgmAudio.PlayScheduled(AudioSettings.dspTime + 60.0f / _bpm * 3 - _initialSpace);
-                _initialSpace = 60.0f / _bpm * 3;
-                _countdownStart = 0;
-            }
-            else
-            {
-                // _emptyAudioTime = emptyBgmTime;
-                _countdownStart = _initialSpace - 60.0f / _bpm * 3 + emptyBgmTime;
-                _initialSpace += emptyBgmTime;
-                bgmAudio.PlayScheduled(AudioSettings.dspTime + emptyBgmTime);
-            }
-        
-            _notes = new List<float>();
+            // 添加步骤
             foreach (var i in textList[1].Split(' '))
             {
                 _notes.Add(float.Parse(i, ci));
             }
+        }
+        
+        // 起步倒计时
+        if (_initialSpace + emptyBgmTime < 60.0f / _bpm * 3)
+        {
+            // 小于早期节拍   90(2秒） 0.18 + 1 < 2
+            // _emptyAudioTime = 60.0f / _bpm * 3 - _initialSpace;
+            bgmAudio.PlayScheduled(AudioSettings.dspTime + 60.0f / _bpm * 3 - _initialSpace);
+            _initialSpace = 60.0f / _bpm * 3;
+            _countdownStart = 0;
+        }
+        else
+        {
+            // _emptyAudioTime = emptyBgmTime;
+            _countdownStart = _initialSpace - 60.0f / _bpm * 3 + emptyBgmTime;
+            _initialSpace += emptyBgmTime;
+            bgmAudio.PlayScheduled(AudioSettings.dspTime + emptyBgmTime);
         }
     }
 

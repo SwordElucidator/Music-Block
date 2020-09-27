@@ -40,13 +40,13 @@ public class Starter : MonoBehaviour
 
     public Slider sens;
     // public bool auto = false;
-    private Dictionary<int, OsuLoader> _loaderDict;
+    private Dictionary<Button, OsuLoader> _loaderDict;
 
     private string _makeStar(int h)
     {
         const string s = "★";
         var startString = "";
-        for (var j = 0; j < h; j++)
+        for (var j = 0; j < Math.Min(h, 10); j++)
         {
             startString += s;
         }
@@ -62,27 +62,36 @@ public class Starter : MonoBehaviour
             var b = Instantiate(firstButton, parent, true);
             b.transform.Find("Name").GetComponent<Text>().text = names[i];
             
-            b.transform.Find("Star").GetComponent<Text>().text = _makeStar(hardness[i]);
+            var mapHolder = b.transform.Find("Maps").Find("Viewport").Find("Content");
+            var mapBtn = mapHolder.Find("MapButton");
+            var map = Instantiate(mapBtn, mapHolder, true);
+            
+            map.transform.Find("Star").GetComponent<Text>().text = _makeStar(hardness[i]);
+            Transform transform1;
+            (transform1 = map.transform).Find("Title").GetComponent<Text>().text = "Standard";
+            var posMap = transform1.position;
+            transform1.position = new Vector3(posMap.x, posMap.y, posMap.z);
+            
             var pos = b.transform.position;
-            b.transform.position = new Vector3(pos.x, pos.y - i * 240, pos.z);
+            b.transform.position = new Vector3(pos.x, pos.y - i * 420, pos.z);
             b.transform.Find("Mask").Find("Image").GetComponent<RawImage>().texture = images[i];
+            
             if (PlayerPrefs.HasKey("high-score-" + names[i]))
             {
                 var score = PlayerPrefs.GetFloat("high-score-" + names[i]);
-                b.transform.Find("Score").GetComponent<Text>().text = Convert.ToInt32(score).ToString().PadLeft(7, '0');
+                map.transform.Find("Score").GetComponent<Text>().text = Convert.ToInt32(score).ToString().PadLeft(7, '0');
             }else
             {
-                b.transform.Find("Score").GetComponent<Text>().text = "0000000";
+                map.transform.Find("Score").GetComponent<Text>().text = "0000000";
             }
             
-            
-            b.GetComponent<Button>().onClick.AddListener(StartGame);
+            map.GetComponent<Button>().onClick.AddListener(StartGame);
         }
         
         
         const string fullPath = "Assets/Resources/data/";  
         
-        _loaderDict = new Dictionary<int, OsuLoader>();
+        _loaderDict = new Dictionary<Button, OsuLoader>();
         
         //获取指定路径下面的所有资源文件  
         if (Directory.Exists(fullPath))
@@ -93,47 +102,66 @@ public class Starter : MonoBehaviour
             for (var j = 0; j < dirs.Length; j++)
             {
                 var dir = dirs[j];
-                // 这是一首曲子
                 var image = dir.GetFiles("*.jpg")[0];
                 var osuFiles = dir.GetFiles("*.osu");
-                var osuLoader = new OsuLoader(osuFiles[0]);
-                var info = osuLoader.ReadSongInfo();
-
+                // 外button位置
                 var b = Instantiate(firstButton, parent, true);
-                // 需要标记
-                _loaderDict[b.GetInstanceID()] = osuLoader;
-                b.transform.Find("Name").GetComponent<Text>().text = info.TitleUnicode;
-                b.transform.Find("Star").GetComponent<Text>().text = _makeStar((info.ApproachRate + info.CircleSize) / 2);
                 var pos = b.transform.position;
-                b.transform.position = new Vector3(pos.x, pos.y - (names.Length + j) * 240, pos.z);
-                var tex = new Texture2D(1, 1);
-                tex.LoadImage(File.ReadAllBytes(image.FullName));
-                var img = b.transform.Find("Mask").Find("Image");
-                img.GetComponent<RawImage>().texture = tex;
-                img.GetComponent<AspectRatioFitter>().aspectRatio = (float)tex.width / tex.height;
-                if (PlayerPrefs.HasKey("high-score-" + info.BeatmapID))
+                b.transform.position = new Vector3(pos.x, pos.y - (names.Length + j) * 420, pos.z);
+                var mapHolder = b.transform.Find("Maps").Find("Viewport").Find("Content");
+                
+                for (var k = 0; k < osuFiles.Length; k++)
                 {
-                    var score = PlayerPrefs.GetFloat("high-score-" + info.BeatmapID);
-                    b.transform.Find("Score").GetComponent<Text>().text = Convert.ToInt32(score).ToString().PadLeft(7, '0');
-                }else
-                {
-                    b.transform.Find("Score").GetComponent<Text>().text = "0000000";
-                }
+                    var osuLoader = new OsuLoader(osuFiles[k]);
+                    var info = osuLoader.ReadSongInfo();
+                    
+                    var mapBtn = mapHolder.Find("MapButton");
+                    var map = Instantiate(mapBtn, mapHolder, true);
+                    
+                    _loaderDict[map.GetComponent<Button>()] = osuLoader;
+      
+                    map.transform.Find("Star").GetComponent<Text>().text = _makeStar((info.ApproachRate + info.CircleSize + (int)(info.NoteLength / 100f)) / 3);
 
-                b.GetComponent<Button>().onClick.AddListener(StartGame);
-                print(osuLoader.GetBgm(info.AudioFilename));
-                // print(Resources.Load<AudioClip>("data/954004 Mimori Suzuko - Univer Page (TV Size)/audio"));
+                    var bText = b.transform.Find("Name").GetComponent<Text>();
+                    if (bText.text != info.TitleUnicode)
+                    {
+                        bText.text = info.TitleUnicode;
+                        var tex = new Texture2D(1, 1);
+                        tex.LoadImage(File.ReadAllBytes(image.FullName));
+                        var img = b.transform.Find("Mask").Find("Image");
+                        img.GetComponent<RawImage>().texture = tex;
+                        img.GetComponent<AspectRatioFitter>().aspectRatio = (float)tex.width / tex.height;   
+                    }
+
+                    if (PlayerPrefs.HasKey("high-score-" + info.BeatmapID))
+                    {
+                        var score = PlayerPrefs.GetFloat("high-score-" + info.BeatmapID);
+                        map.transform.Find("Score").GetComponent<Text>().text = Convert.ToInt32(score).ToString().PadLeft(7, '0');
+                    }else
+                    {
+                        map.transform.Find("Score").GetComponent<Text>().text = "0000000";
+                    }
+                    
+                    Transform transform1;
+                    (transform1 = map.transform).Find("Title").GetComponent<Text>().text = info.Version;
+                    var posMap = transform1.position;
+                    transform1.position = new Vector3(posMap.x + k * 320, posMap.y, posMap.z);
+                    
+                    map.GetComponent<Button>().onClick.AddListener(StartGame);   
+                }
+                
+                mapHolder.GetComponent<RectTransform>().sizeDelta = new Vector2(osuFiles.Length * 320, 0);
             }
         }
 
-        var rect = parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 300 + names.Length * 240);
+        parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 300 + names.Length * 420);
     }
 
     private void StartGame()
     {
         var obj = EventSystem.current.currentSelectedGameObject;
-
-        if (_loaderDict.ContainsKey(obj.GetInstanceID()))
+        // info.BeatmapID
+        if (_loaderDict.ContainsKey(obj.GetComponent<Button>()))
         {
             StaticClass.Bgm = null;
             StaticClass.Script = null;
@@ -141,13 +169,13 @@ public class Starter : MonoBehaviour
             StaticClass.Sensibility = sens.value;
             StaticClass.Name = null;
             StaticClass.IsOsu = true;
-            StaticClass.Loader = _loaderDict[obj.GetInstanceID()];
+            StaticClass.Loader = _loaderDict[obj.GetComponent<Button>()];
             PlayerPrefs.SetFloat("sens", StaticClass.Sensibility);
             SceneManager.LoadScene("Music");
         }
         else
         {
-            var n = obj.transform.Find("Name").GetComponent<Text>().text;
+            var n = obj.transform.parent.parent.parent.parent.Find("Name").GetComponent<Text>().text;
             for (var i = 0; i < names.Length; i++)
             {
                 if (names[i] == n)

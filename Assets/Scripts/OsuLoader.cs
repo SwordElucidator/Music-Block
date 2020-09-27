@@ -2,9 +2,19 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+
+public struct TimingPoint
+{
+    public int time;
+    public float bpm;
+    public float speedMultiplier;
+}
+
 
 public struct SongInfo
 {
@@ -30,9 +40,11 @@ public struct SongInfo
     public int PreviewTime;
     public int Mode;
     
-    // 变速部分todo
-
-    public ArrayList Notes;
+    // 变速部分
+    public List<TimingPoint> TimingPoints;
+    
+    public List<int> Notes;
+    public int NoteLength;
 }
 
 
@@ -81,7 +93,7 @@ public class OsuLoader
     }
 
 
-    private string _readLine(string line, string block, ref SongInfo info)
+    private string _readLine(string line, string block, ref SongInfo info, bool easy=false)
     {
         if (line == null) return block;
         if (line.Length >= 2 && line[0] == '[' && line[line.Length - 1] == ']')
@@ -111,9 +123,37 @@ public class OsuLoader
         {
             if (line.StartsWith("CircleSize:")) info.CircleSize = int.Parse(line.Split(new char[]{':'}, 2)[1].Trim());
             if (line.StartsWith("ApproachRate:")) info.ApproachRate = int.Parse(line.Split(new char[]{':'}, 2)[1].Trim());
+        }else if (block == "[TimingPoints]")
+        {
+            if (easy) return block;
+            if (line.Trim().Length == 0) return block;
+            var items = line.Split(',');
+            var time = int.Parse(items[0]);
+            CultureInfo ci = CultureInfo.CreateSpecificCulture("en-US");
+            ci.NumberFormat.CurrencyDecimalSeparator = ".";
+            var bpmOrSpeed = (float)double.Parse(items[1], ci);
+            var tp = new TimingPoint();
+            tp.time = time;
+            if (bpmOrSpeed > 0)
+            {
+                tp.bpm = 1f / bpmOrSpeed * 1000f * 60f;
+                tp.speedMultiplier = 1;
+            }
+            else
+            {
+                tp.bpm = info.TimingPoints.Last().bpm;
+                tp.speedMultiplier = -100f / bpmOrSpeed;
+            }
+            
+            info.TimingPoints.Add(tp);
         }else if (block == "[HitObjects]")
         {
-            info.Notes.Add(int.Parse(line.Split(',')[2].Trim()));
+            if (easy)
+            {
+                info.NoteLength += 1;
+                return block;
+            }
+            if (line.Length > 0) info.Notes.Add(int.Parse(line.Split(',')[2].Trim()));
         }
         return block;
     }
@@ -122,7 +162,7 @@ public class OsuLoader
     {
         var reader = _file.OpenText();
         var block = "";
-        var info = new SongInfo {Notes = new ArrayList()};
+        var info = new SongInfo {Notes = new List<int>(), TimingPoints = new List<TimingPoint>()};
         while (!reader.EndOfStream)
         {
             block = _readLine(reader.ReadLine(), block, ref info);
@@ -136,11 +176,10 @@ public class OsuLoader
     {
         var reader = _file.OpenText();
         var block = "";
-        var info = new SongInfo {Notes = new ArrayList()};
+        var info = new SongInfo {Notes = new List<int>(), TimingPoints = new List<TimingPoint>()};
         while (!reader.EndOfStream)
         {
-            block = _readLine(reader.ReadLine(), block, ref info);
-            if (block == "[Events]") break;
+            block = _readLine(reader.ReadLine(), block, ref info, true);
         }
         reader.Close();
         return info;
