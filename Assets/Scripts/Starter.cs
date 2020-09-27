@@ -98,8 +98,7 @@ public class Starter : MonoBehaviour
                 var osuFiles = dir.GetFiles("*.osu");
                 var osuLoader = new OsuLoader(osuFiles[0]);
                 var info = osuLoader.ReadSongInfo();
-                
-                
+
                 var b = Instantiate(firstButton, parent, true);
                 // 需要标记
                 _loaderDict[b.GetInstanceID()] = osuLoader;
@@ -120,9 +119,10 @@ public class Starter : MonoBehaviour
                 {
                     b.transform.Find("Score").GetComponent<Text>().text = "0000000";
                 }
-            
-            
+
                 b.GetComponent<Button>().onClick.AddListener(StartGame);
+                print(osuLoader.GetBgm(info.AudioFilename));
+                // print(Resources.Load<AudioClip>("data/954004 Mimori Suzuko - Univer Page (TV Size)/audio"));
             }
         }
 

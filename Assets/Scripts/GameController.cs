@@ -11,6 +11,7 @@ using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
+
 public class GameController : MonoBehaviour
 {
 
@@ -207,44 +208,52 @@ public class GameController : MonoBehaviour
 
     private void LoadScript()
     {
-        var textList = (StaticClass.Script ? StaticClass.Script : defaultScript).text.Split('\n');
-        const float emptyBgmTime = 1;
-        if (StaticClass.Bgm)
+        if (StaticClass.IsOsu)
         {
-            bgmAudio.clip = StaticClass.Bgm;
-        }
-
-        CultureInfo ci = CultureInfo.CreateSpecificCulture("en-US");
-        ci.NumberFormat.CurrencyDecimalSeparator = ".";
-        _bpm = float.Parse(textList[0].Split(' ')[0], ci);  // 182节/分钟的话  
-        _initialSpace = float.Parse(textList[0].Split(' ')[1], ci);
-        if (textList[0].Split(' ').Length > 2)
-        {
-            // 控制球速
-            ballSpeed = float.Parse(textList[0].Split(' ')[2], ci);
-        }
-        
-        // 起步倒计时
-        if (_initialSpace + emptyBgmTime < 60.0f / _bpm * 3)
-        {
-            // 小于早期节拍   90(2秒） 0.18 + 1 < 2
-            // _emptyAudioTime = 60.0f / _bpm * 3 - _initialSpace;
-            bgmAudio.PlayScheduled(AudioSettings.dspTime + 60.0f / _bpm * 3 - _initialSpace);
-            _initialSpace = 60.0f / _bpm * 3;
-            _countdownStart = 0;
+            // var info = StaticClass.Loader.DeepRead();
+            // bgmAudio.clip = StaticClass.Loader.GetBgm(info.AudioFilename);
         }
         else
         {
-            // _emptyAudioTime = emptyBgmTime;
-            _countdownStart = _initialSpace - 60.0f / _bpm * 3 + emptyBgmTime;
-            _initialSpace += emptyBgmTime;
-            bgmAudio.PlayScheduled(AudioSettings.dspTime + emptyBgmTime);
-        }
+            var textList = (StaticClass.Script ? StaticClass.Script : defaultScript).text.Split('\n');
+            const float emptyBgmTime = 1;
+            if (StaticClass.Bgm)
+            {
+                bgmAudio.clip = StaticClass.Bgm;
+            }
+
+            CultureInfo ci = CultureInfo.CreateSpecificCulture("en-US");
+            ci.NumberFormat.CurrencyDecimalSeparator = ".";
+            _bpm = float.Parse(textList[0].Split(' ')[0], ci);  // 182节/分钟的话  
+            _initialSpace = float.Parse(textList[0].Split(' ')[1], ci);
+            if (textList[0].Split(' ').Length > 2)
+            {
+                // 控制球速
+                ballSpeed = float.Parse(textList[0].Split(' ')[2], ci);
+            }
         
-        _notes = new List<float>();
-        foreach (var i in textList[1].Split(' '))
-        {
-            _notes.Add(float.Parse(i, ci));
+            // 起步倒计时
+            if (_initialSpace + emptyBgmTime < 60.0f / _bpm * 3)
+            {
+                // 小于早期节拍   90(2秒） 0.18 + 1 < 2
+                // _emptyAudioTime = 60.0f / _bpm * 3 - _initialSpace;
+                bgmAudio.PlayScheduled(AudioSettings.dspTime + 60.0f / _bpm * 3 - _initialSpace);
+                _initialSpace = 60.0f / _bpm * 3;
+                _countdownStart = 0;
+            }
+            else
+            {
+                // _emptyAudioTime = emptyBgmTime;
+                _countdownStart = _initialSpace - 60.0f / _bpm * 3 + emptyBgmTime;
+                _initialSpace += emptyBgmTime;
+                bgmAudio.PlayScheduled(AudioSettings.dspTime + emptyBgmTime);
+            }
+        
+            _notes = new List<float>();
+            foreach (var i in textList[1].Split(' '))
+            {
+                _notes.Add(float.Parse(i, ci));
+            }
         }
     }
 
