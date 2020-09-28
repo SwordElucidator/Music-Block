@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public struct TimingPoint
 {
@@ -57,39 +59,29 @@ public class OsuLoader
         _file = file;
     }
 
-    public AudioClip GetBgm(string name)
+    public async Task<AudioClip> GetBgm(string name)
     {
-        var path = Path.Combine(_file.Directory.FullName, name);
-        string m = "";
-        bool start = false;
-        var items = path.Split(Path.DirectorySeparatorChar);
-        for (var i = 0; i < items.Length; i++)
+        AudioClip clip = null;
+        var path = "file://" + Path.Combine(_file.Directory.FullName, name);
+        var uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.MPEG);
+        uwr.SendWebRequest();
+        try
         {
-            var item = items[i];
-            if (item == "Resources")
-            {
-                start = true;
-                continue;
-            }
-            if (!start) continue;
-            if (i == items.Length - 1)
-            {
-                var temp = item.Split('.');
-                for (var j = 0; j < temp.Length - 1; j++)
-                {
-                    m += temp[j] + ".";
-                }
-
-                m = m.Substring(0, m.Length - 1);
-            }
+            while (!uwr.isDone) await Task.Delay(5);
+ 
+            if (uwr.isNetworkError || uwr.isHttpError) Debug.Log($"{uwr.error}");
             else
             {
-                m += item + Path.DirectorySeparatorChar;
+                Debug.Log("Found Clip");
+                clip = DownloadHandlerAudioClip.GetContent(uwr);
             }
-            
+        }
+        catch (Exception err)
+        {
+            Debug.Log($"{err.Message}, {err.StackTrace}");
         }
 
-        return Resources.Load<AudioClip>(m);
+        return clip;
     }
 
 
@@ -121,8 +113,8 @@ public class OsuLoader
             if (line.StartsWith("BeatmapSetID:")) info.BeatmapSetID = int.Parse(line.Split(new char[] {':'}, 2)[1].Trim());
         }else if (block == "[Difficulty]")
         {
-            if (line.StartsWith("CircleSize:")) info.CircleSize = int.Parse(line.Split(new char[]{':'}, 2)[1].Trim());
-            if (line.StartsWith("ApproachRate:")) info.ApproachRate = int.Parse(line.Split(new char[]{':'}, 2)[1].Trim());
+            if (line.StartsWith("CircleSize:")) info.CircleSize = (int)float.Parse(line.Split(new char[]{':'}, 2)[1].Trim());
+            if (line.StartsWith("ApproachRate:")) info.ApproachRate = (int)float.Parse(line.Split(new char[]{':'}, 2)[1].Trim());
         }else if (block == "[TimingPoints]")
         {
             if (easy) return block;

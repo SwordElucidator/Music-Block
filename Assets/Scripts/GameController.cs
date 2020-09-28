@@ -82,6 +82,7 @@ public class GameController : MonoBehaviour
     
     // osu模型
     private SongInfo _osuSongInfo;
+    private bool loaded = false;
     
     // Start is called before the first frame update
     void Start()
@@ -91,12 +92,16 @@ public class GameController : MonoBehaviour
             StaticClass.Auto = true;
         }
         LoadScript();
-        InitializeBall();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!loaded)
+        {
+            return;
+        }
         if (_isGameOver)
         {
             return;
@@ -160,6 +165,10 @@ public class GameController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!loaded)
+        {
+            return;
+        }
         if (_isGameOver)
         {
             return;
@@ -209,13 +218,13 @@ public class GameController : MonoBehaviour
         _ps.Stop();
     }
 
-    private void LoadScript()
+    private async void LoadScript()
     {
         const float emptyBgmTime = 1;
         if (StaticClass.IsOsu)
         {
             _osuSongInfo = StaticClass.Loader.DeepRead();
-            bgmAudio.clip = StaticClass.Loader.GetBgm(_osuSongInfo.AudioFilename);
+            bgmAudio.clip = await StaticClass.Loader.GetBgm(_osuSongInfo.AudioFilename);
             _bpm = _osuSongInfo.TimingPoints[0].bpm;  // TODO
             // _osuSongInfo.AudioLeadIn;   概念：audio进入时间
             
@@ -258,7 +267,6 @@ public class GameController : MonoBehaviour
                 _notes.Add(float.Parse(i, ci));
             }
         }
-        
         // 起步倒计时
         if (_initialSpace + emptyBgmTime < 60.0f / _bpm * 3)
         {
@@ -275,6 +283,8 @@ public class GameController : MonoBehaviour
             _initialSpace += emptyBgmTime;
             bgmAudio.PlayScheduled(AudioSettings.dspTime + emptyBgmTime);
         }
+        loaded = true;
+        InitializeBall();
     }
 
 

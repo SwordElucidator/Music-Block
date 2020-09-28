@@ -3,7 +3,23 @@
   <component name="ChangeListManager">
     <list default="true" id="2be46bf8-7c84-4fb9-a53d-7124be47b3a6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Music.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Music.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size).meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/Mimori Suzuko - Univer Page (TV Size) (Faputa) [Futsuu].osu" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/Mimori Suzuko - Univer Page (TV Size) (Faputa) [Futsuu].osu.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/Mimori Suzuko - Univer Page (TV Size) (Faputa) [Inner Oni].osu" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/Mimori Suzuko - Univer Page (TV Size) (Faputa) [Inner Oni].osu.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/Mimori Suzuko - Univer Page (TV Size) (Faputa) [Kantan].osu" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/Mimori Suzuko - Univer Page (TV Size) (Faputa) [Kantan].osu.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/Mimori Suzuko - Univer Page (TV Size) (Faputa) [Muzukashii].osu" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/Mimori Suzuko - Univer Page (TV Size) (Faputa) [Muzukashii].osu.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/Mimori Suzuko - Univer Page (TV Size) (Faputa) [Oni].osu" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/Mimori Suzuko - Univer Page (TV Size) (Faputa) [Oni].osu.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/audio.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/audio.mp3.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/bg.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/bg.jpg.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/outbreakcompany.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/data/954004 Mimori Suzuko - Univer Page (TV Size)/outbreakcompany.mp4.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Title.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Title.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/OsuLoader.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/OsuLoader.cs" afterDir="false" />
@@ -37,8 +53,8 @@
         <option value="$PROJECT_DIR$/Assets/Text/千本桜.txt" />
         <option value="$PROJECT_DIR$/Assets/Text/Échame la Culpa.txt" />
         <option value="$PROJECT_DIR$/Assets/Text/V.A. - snow storm -euphoria-.txt" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/GameController.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/OsuLoader.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/GameController.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Starter.cs" />
       </list>
     </option>
@@ -70,10 +86,10 @@
       <option name="pid" />
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="32017">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="60630">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="32017" />
+      <option name="pid" value="60630" />
       <method v="2" />
     </configuration>
   </component>
@@ -90,7 +106,7 @@
       <workItem from="1598874131296" duration="21429000" />
       <workItem from="1600224861841" duration="25708000" />
       <workItem from="1600336461278" duration="23470000" />
-      <workItem from="1601006095630" duration="29490000" />
+      <workItem from="1601006095630" duration="40710000" />
     </task>
     <servers />
   </component>
@@ -117,70 +133,70 @@
       <screen x="0" y="23" width="1440" height="819" />
     </state>
     <state width="467" height="466" key="DebuggerActiveHint/0.23.1440.819@0.23.1440.819" timestamp="1601189162576" />
-    <state width="1358" height="202" key="GridCell.Tab.0.bottom" timestamp="1601189076644">
+    <state width="1358" height="202" key="GridCell.Tab.0.bottom" timestamp="1601205374225">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.0.bottom/0.23.1440.819@0.23.1440.819" timestamp="1601189076644" />
-    <state width="1358" height="202" key="GridCell.Tab.0.center" timestamp="1601189076643">
+    <state width="1358" height="202" key="GridCell.Tab.0.bottom/0.23.1440.819@0.23.1440.819" timestamp="1601205374225" />
+    <state width="1358" height="202" key="GridCell.Tab.0.center" timestamp="1601205374224">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.0.center/0.23.1440.819@0.23.1440.819" timestamp="1601189076643" />
-    <state width="1358" height="202" key="GridCell.Tab.0.left" timestamp="1601189076643">
+    <state width="1358" height="202" key="GridCell.Tab.0.center/0.23.1440.819@0.23.1440.819" timestamp="1601205374224" />
+    <state width="1358" height="202" key="GridCell.Tab.0.left" timestamp="1601205374224">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.0.left/0.23.1440.819@0.23.1440.819" timestamp="1601189076643" />
-    <state width="1358" height="202" key="GridCell.Tab.0.right" timestamp="1601189076644">
+    <state width="1358" height="202" key="GridCell.Tab.0.left/0.23.1440.819@0.23.1440.819" timestamp="1601205374224" />
+    <state width="1358" height="202" key="GridCell.Tab.0.right" timestamp="1601205374224">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.0.right/0.23.1440.819@0.23.1440.819" timestamp="1601189076644" />
-    <state width="1358" height="202" key="GridCell.Tab.1.bottom" timestamp="1601189096067">
+    <state width="1358" height="202" key="GridCell.Tab.0.right/0.23.1440.819@0.23.1440.819" timestamp="1601205374224" />
+    <state width="1358" height="202" key="GridCell.Tab.1.bottom" timestamp="1601205418659">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.1.bottom/0.23.1440.819@0.23.1440.819" timestamp="1601189096067" />
-    <state width="1358" height="202" key="GridCell.Tab.1.center" timestamp="1601189096066">
+    <state width="1358" height="202" key="GridCell.Tab.1.bottom/0.23.1440.819@0.23.1440.819" timestamp="1601205418659" />
+    <state width="1358" height="202" key="GridCell.Tab.1.center" timestamp="1601205418657">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.1.center/0.23.1440.819@0.23.1440.819" timestamp="1601189096066" />
-    <state width="1358" height="202" key="GridCell.Tab.1.left" timestamp="1601189096065">
+    <state width="1358" height="202" key="GridCell.Tab.1.center/0.23.1440.819@0.23.1440.819" timestamp="1601205418657" />
+    <state width="1358" height="202" key="GridCell.Tab.1.left" timestamp="1601205418657">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.1.left/0.23.1440.819@0.23.1440.819" timestamp="1601189096065" />
-    <state width="1358" height="202" key="GridCell.Tab.1.right" timestamp="1601189096067">
+    <state width="1358" height="202" key="GridCell.Tab.1.left/0.23.1440.819@0.23.1440.819" timestamp="1601205418657" />
+    <state width="1358" height="202" key="GridCell.Tab.1.right" timestamp="1601205418658">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.1.right/0.23.1440.819@0.23.1440.819" timestamp="1601189096067" />
-    <state width="1358" height="202" key="GridCell.Tab.2.bottom" timestamp="1601189076557">
+    <state width="1358" height="202" key="GridCell.Tab.1.right/0.23.1440.819@0.23.1440.819" timestamp="1601205418658" />
+    <state width="1358" height="202" key="GridCell.Tab.2.bottom" timestamp="1601205374103">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.2.bottom/0.23.1440.819@0.23.1440.819" timestamp="1601189076557" />
-    <state width="1358" height="202" key="GridCell.Tab.2.center" timestamp="1601189076556">
+    <state width="1358" height="202" key="GridCell.Tab.2.bottom/0.23.1440.819@0.23.1440.819" timestamp="1601205374103" />
+    <state width="1358" height="202" key="GridCell.Tab.2.center" timestamp="1601205374102">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.2.center/0.23.1440.819@0.23.1440.819" timestamp="1601189076556" />
-    <state width="1358" height="202" key="GridCell.Tab.2.left" timestamp="1601189076556">
+    <state width="1358" height="202" key="GridCell.Tab.2.center/0.23.1440.819@0.23.1440.819" timestamp="1601205374102" />
+    <state width="1358" height="202" key="GridCell.Tab.2.left" timestamp="1601205374101">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.2.left/0.23.1440.819@0.23.1440.819" timestamp="1601189076556" />
-    <state width="1358" height="202" key="GridCell.Tab.2.right" timestamp="1601189076557">
+    <state width="1358" height="202" key="GridCell.Tab.2.left/0.23.1440.819@0.23.1440.819" timestamp="1601205374101" />
+    <state width="1358" height="202" key="GridCell.Tab.2.right" timestamp="1601205374102">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.2.right/0.23.1440.819@0.23.1440.819" timestamp="1601189076557" />
-    <state width="1358" height="202" key="GridCell.Tab.3.bottom" timestamp="1601189076559">
+    <state width="1358" height="202" key="GridCell.Tab.2.right/0.23.1440.819@0.23.1440.819" timestamp="1601205374102" />
+    <state width="1358" height="202" key="GridCell.Tab.3.bottom" timestamp="1601205374105">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.3.bottom/0.23.1440.819@0.23.1440.819" timestamp="1601189076559" />
-    <state width="1358" height="202" key="GridCell.Tab.3.center" timestamp="1601189076558">
+    <state width="1358" height="202" key="GridCell.Tab.3.bottom/0.23.1440.819@0.23.1440.819" timestamp="1601205374105" />
+    <state width="1358" height="202" key="GridCell.Tab.3.center" timestamp="1601205374105">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.3.center/0.23.1440.819@0.23.1440.819" timestamp="1601189076558" />
-    <state width="1358" height="202" key="GridCell.Tab.3.left" timestamp="1601189076557">
+    <state width="1358" height="202" key="GridCell.Tab.3.center/0.23.1440.819@0.23.1440.819" timestamp="1601205374105" />
+    <state width="1358" height="202" key="GridCell.Tab.3.left" timestamp="1601205374104">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.3.left/0.23.1440.819@0.23.1440.819" timestamp="1601189076557" />
-    <state width="1358" height="202" key="GridCell.Tab.3.right" timestamp="1601189076558">
+    <state width="1358" height="202" key="GridCell.Tab.3.left/0.23.1440.819@0.23.1440.819" timestamp="1601205374104" />
+    <state width="1358" height="202" key="GridCell.Tab.3.right" timestamp="1601205374105">
       <screen x="0" y="23" width="1440" height="819" />
     </state>
-    <state width="1358" height="202" key="GridCell.Tab.3.right/0.23.1440.819@0.23.1440.819" timestamp="1601189076558" />
+    <state width="1358" height="202" key="GridCell.Tab.3.right/0.23.1440.819@0.23.1440.819" timestamp="1601205374105" />
     <state x="323" y="206" width="801" height="486" key="find.popup" timestamp="1601006962061">
       <screen x="0" y="23" width="1440" height="819" />
     </state>

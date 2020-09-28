@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LightBuzz.Archiver;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
@@ -29,6 +30,7 @@ public class Starter : MonoBehaviour
 {
 
     public GameObject firstButton;
+    public GameObject downloading;
     public Transform parent;
     public string[] names;
     public int[] hardness;
@@ -54,7 +56,7 @@ public class Starter : MonoBehaviour
         return startString;
     }
 
-    void Start()
+    private void PlaceItems()
     {
         sens.value = PlayerPrefs.HasKey("sens") ? PlayerPrefs.GetFloat("sens") : StaticClass.Sensibility;
         for (var i = 0; i < names.Length; i++)
@@ -89,20 +91,38 @@ public class Starter : MonoBehaviour
         }
         
         
-        const string fullPath = "Assets/Resources/data/";  
+        var fullPath = Path.Combine(Application.persistentDataPath, "songs");  
         
         _loaderDict = new Dictionary<Button, OsuLoader>();
-        
+
+        var dirLength = 0;
         //获取指定路径下面的所有资源文件  
+
         if (Directory.Exists(fullPath))
         {
             var direction = new DirectoryInfo(fullPath);
             var dirs = direction.GetDirectories();
-            
+            dirLength = dirs.Length;
             for (var j = 0; j < dirs.Length; j++)
             {
                 var dir = dirs[j];
-                var image = dir.GetFiles("*.jpg")[0];
+                
+                var imgs = dir.GetFiles("*.jpg");
+                if (imgs.Length == 0)
+                {
+                    imgs = dir.GetFiles("*.png");
+                }
+                if (imgs.Length == 0)
+                {
+                    imgs = dir.GetFiles("*.jpeg");
+                }
+
+                if (imgs.Length == 0)
+                {
+                    print(dir);
+                }
+
+                var image = imgs[0];
                 var osuFiles = dir.GetFiles("*.osu");
                 // 外button位置
                 var b = Instantiate(firstButton, parent, true);
@@ -154,7 +174,58 @@ public class Starter : MonoBehaviour
             }
         }
 
-        parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 300 + names.Length * 420);
+        parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 300 + (names.Length + dirLength) * 420);
+    }
+
+    private IEnumerator Download()
+    {
+        var uwr = new UnityWebRequest("https://vcz.oss-cn-beijing.aliyuncs.com/songs.zip", UnityWebRequest.kHttpVerbGET);
+        string path = Path.Combine(Application.persistentDataPath, "songs.zip");
+        uwr.downloadHandler = new DownloadHandlerFile(path);
+        yield return uwr.SendWebRequest();
+        if (uwr.isNetworkError || uwr.isHttpError)
+            Debug.LogError(uwr.error);
+        else
+        {
+            Debug.Log("File successfully downloaded and saved to " + path);
+            var songsDir = Path.Combine(Application.persistentDataPath, "songs");
+            if (!new DirectoryInfo(songsDir).Exists)
+            {
+                Directory.CreateDirectory(songsDir);
+            }
+            Archiver.Decompress ( path, songsDir, true);
+            File.Delete(path);
+            var dir = new DirectoryInfo(Path.Combine(Application.persistentDataPath, "songs"));
+            var files = dir.GetFiles("*.osz");
+            foreach (var file in files)
+            {
+                var des = Path.Combine(Application.persistentDataPath, "songs", file.Name.Split('.')[0]);
+                if (!new DirectoryInfo(des).Exists)
+                {
+                    Directory.CreateDirectory(des);
+                }
+                Archiver.Decompress ( file.FullName, des, true);
+                File.Delete(file.FullName);
+            }
+            downloading.SetActive(false);
+            PlayerPrefs.SetString("downloaded1", "1");
+            PlaceItems();
+        }
+            
+        // System.IO
+        // Application.persistentDataPath
+    }
+    
+    void Start()
+    {
+        if (PlayerPrefs.HasKey("downloaded1"))
+        {
+            downloading.SetActive(false);
+            PlaceItems();
+        }else
+        {
+            StartCoroutine(Download());
+        }
     }
 
     private void StartGame()
