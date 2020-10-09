@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using Assets.AbstractWiresEffect.Scripts;
 using UnityEngine;
 using DG.Tweening;
@@ -28,12 +29,17 @@ public class GameController : MonoBehaviour
     // public float tolerant = 0.3f;
 
     public AudioSource bgmAudio;
+
+    public AudioSource beatEffect;
     
     public AudioSource failAudio;
+    
+    public RawImage bg;
 
     public Text countDown;
     public Text score;
     public Text combos;
+    public Text hpText;
     private float _score;
     private int _combos = 0;
 
@@ -43,6 +49,7 @@ public class GameController : MonoBehaviour
     
     private float _bpm;
     private float _initialSpace;
+    private float _absoluteInitialSpace;
     private List<float> _notes = new List<float>();
     private List<GameObject> _noteSteps;
     private int _nextNoteIndex = -1;
@@ -51,12 +58,11 @@ public class GameController : MonoBehaviour
     private float _cameraY;
     private float _cameraZ;
     private GameObject _nextStep;
+    private int _hp = 10;
     private bool _isGameOver = false;
-    private bool _failed = false;
     private float _initialBallHeight = 0;
     private ParticleSystem _ps;
     private float _lastNodeTime;
-    // private float _emptyAudioTime = 0;
     private float _countdownStart = 0;
     private Vector3 _mousePosition = new Vector3();
     private double _scheduledBgmStartTime;
@@ -83,6 +89,8 @@ public class GameController : MonoBehaviour
     // osu模型
     private SongInfo _osuSongInfo;
     private bool loaded = false;
+    private double _initialDspTime;
+    private float _initialTime;
     
     // Start is called before the first frame update
     void Start()
@@ -130,7 +138,7 @@ public class GameController : MonoBehaviour
                 {
                     // 切记：z位置范围为0~3
                     var radius = (_nextStep.transform.localScale.z / 2);
-                    var r = (3f + radius * 2) / Screen.width * (1f + StaticClass.Sensibility * 2);  // 变化率
+                    var r = (3f + radius * 2) / Math.Min(Screen.width, 1200) * (1f + StaticClass.Sensibility * 2);  // 变化率，默认最大1200（其以上则另算）
                     var max = 3f + radius;
                     var min = -radius;
                     if (_mousePosition != new Vector3())
@@ -173,10 +181,6 @@ public class GameController : MonoBehaviour
         {
             return;
         }
-        if (_nextNoteIndex <= 0)
-        {
-            return;
-        }
         // v=gt
         _gravitySpeed.y = _g * (_dTime += Time.fixedDeltaTime);
 
@@ -200,8 +204,7 @@ public class GameController : MonoBehaviour
 
     private void DoNext()
     {
-        _nextNoteTime += _notes[_nextNoteIndex] / _bpm * 60.0f;
-        _noteSteps[_nextNoteIndex].GetComponent<MeshRenderer>().material.mainTextureScale = new Vector2(0.04f, 1);
+        _nextNoteTime = _notes[_nextNoteIndex] - _absoluteInitialSpace + _initialSpace + _initialTime;
         _nextNoteIndex += 1;
         _nextStep = _noteSteps[_nextNoteIndex];
         StartCoroutine(ShowParticles());
@@ -224,23 +227,25 @@ public class GameController : MonoBehaviour
         if (StaticClass.IsOsu)
         {
             _osuSongInfo = StaticClass.Loader.DeepRead();
+            if (StaticClass.imageTex)
+            {
+                bg.GetComponent<RawImage>().texture = StaticClass.imageTex;
+                bg.GetComponent<AspectRatioFitter>().aspectRatio = (float)StaticClass.imageTex.width / StaticClass.imageTex.height;      
+            }
             bgmAudio.clip = await StaticClass.Loader.GetBgm(_osuSongInfo.AudioFilename);
             _bpm = _osuSongInfo.TimingPoints[0].bpm;  // TODO
             // _osuSongInfo.AudioLeadIn;   概念：audio进入时间
             
             // _initialSpace 从播放audio起，第一个音符前的等待时间
-            _initialSpace = _osuSongInfo.Notes[0] / 1000f;
             // TODO 球速
-            ballSpeed = _osuSongInfo.ApproachRate * 2;
+            ballSpeed = _osuSongInfo.ApproachRate * 3;
             
-            var lastTime = _initialSpace;
             var first = true;
             foreach (var i in _osuSongInfo.Notes)
             {
                 // 这是多少拍子？ 60 / bpm
-                if (first) {first = false; continue;}
-                _notes.Add((i / 1000f - lastTime) / 60 * _bpm);
-                lastTime = i / 1000f;
+                if (first) {first = false; _initialSpace = i / 1000f; _absoluteInitialSpace = _initialSpace; continue;}
+                _notes.Add(i / 1000f);
             }
         }
         else
@@ -256,75 +261,83 @@ public class GameController : MonoBehaviour
             ci.NumberFormat.CurrencyDecimalSeparator = ".";
             _bpm = float.Parse(textList[0].Split(' ')[0], ci);  // 182节/分钟的话  
             _initialSpace = float.Parse(textList[0].Split(' ')[1], ci);
+            _absoluteInitialSpace = _initialSpace;
             if (textList[0].Split(' ').Length > 2)
             {
                 // 控制球速
                 ballSpeed = float.Parse(textList[0].Split(' ')[2], ci);
             }
             // 添加步骤
+            var lastTime = _absoluteInitialSpace;
             foreach (var i in textList[1].Split(' '))
             {
-                _notes.Add(float.Parse(i, ci));
+                var next = float.Parse(i, ci) * 60f / _bpm + lastTime;
+                _notes.Add(next);
+                lastTime = next;
             }
         }
         // 起步倒计时
-        if (_initialSpace + emptyBgmTime < 60.0f / _bpm * 3)
+        _initialDspTime = AudioSettings.dspTime;
+        _initialTime = Time.time;
+        // print(_initialSpace);
+        if (_initialSpace + emptyBgmTime < 60.0f / _bpm * 3)  // 小于3拍
         {
+            // print("种类0");
             // 小于早期节拍   90(2秒） 0.18 + 1 < 2
-            // _emptyAudioTime = 60.0f / _bpm * 3 - _initialSpace;
-            bgmAudio.PlayScheduled(AudioSettings.dspTime + 60.0f / _bpm * 3 - _initialSpace);
+            // bgmAudio.PlayScheduled(_initialDspTime + 60.0f / _bpm * 3 - _initialSpace);
+            bgmAudio.PlayDelayed(60.0f / _bpm * 3 - _initialSpace + StaticClass.SmallDelay);
             _initialSpace = 60.0f / _bpm * 3;
             _countdownStart = 0;
         }
         else
         {
-            // _emptyAudioTime = emptyBgmTime;
-            _countdownStart = _initialSpace - 60.0f / _bpm * 3 + emptyBgmTime;
-            _initialSpace += emptyBgmTime;
-            bgmAudio.PlayScheduled(AudioSettings.dspTime + emptyBgmTime);
+            // print("种类1");
+            _initialSpace += emptyBgmTime;  // 初始时长 + 1秒
+            _countdownStart = _initialSpace - 60.0f / _bpm * 3;
+            // bgmAudio.PlayScheduled(_initialDspTime + emptyBgmTime);
+            bgmAudio.PlayDelayed(emptyBgmTime + StaticClass.SmallDelay);
         }
-        loaded = true;
         InitializeBall();
     }
-
 
     private void InitializeBall()
     {
         var pos = ball.transform.position;
         _initialBallHeight = pos.y;
+        
         var transformCamera = mainCamera.transform;
-        // ball.GetComponent<TrailRenderer>().time = 0;
         var cameraPosition = transformCamera.position;
         _cameraOffset = cameraPosition - pos;
         _cameraY = cameraPosition.y;
         _cameraZ = cameraPosition.z;
-        // pos = new Vector3(pos.x - _initialSpace * ballSpeed, pos.y, pos.z);
-        // ball.transform.position = pos;
-        // transformCamera.position = _cameraOffset + pos;
-        // ball.GetComponent<TrailRenderer>().time = 0.8f;
         GenerateSteps();
         _nextStep = _noteSteps[0];
         _nextNoteIndex = 0;
-        _nextNoteTime = _initialSpace + Time.time;
+        _nextNoteTime = _initialSpace + _initialTime;
         _ps = ball.GetComponent<ParticleSystem>();
+        loaded = true;
         StartCoroutine(InitialNote());
-        
+        // 直接飞
+        ball.transform.position = new Vector3(pos.x - ballSpeed * (_initialSpace + _initialTime - Time.time), pos.y,  pos.z);
+        Fly();
     }
 
     private IEnumerator InitialNote()
     {
-        yield return new WaitForSeconds(_countdownStart);
+        yield return new WaitForSeconds(_initialTime + _countdownStart - Time.time);
+        // print(Time.time - _initialTime);
         // 3
         countDown.text = "3";
-        yield return new WaitForSeconds(60f / _bpm);
+        yield return new WaitForSeconds(_initialTime + _countdownStart + 60f / _bpm  - Time.time);
         // 2
         countDown.text = "2";
-        yield return new WaitForSeconds(60f / _bpm);
+        yield return new WaitForSeconds(_initialTime + _countdownStart + 60f / _bpm * 2  - Time.time);
         // 1
         countDown.text = "1";
-        yield return new WaitForSeconds(60f / _bpm);
+        yield return new WaitForSeconds(_initialTime + _countdownStart + 60f / _bpm * 3  - Time.time);
         countDown.text = "";
-        DoNext();
+        // print(Time.time - _initialTime);
+        // beatEffect.Play();
     }
 
     private float _generateZPos(bool isWaterfall, bool isSmallNote, int i)
@@ -332,36 +345,37 @@ public class GameController : MonoBehaviour
         float zPos;
         if (isWaterfall)
         {
-            zPos = _waterfallPlus ? _lastNotePos + 0.15f : _lastNotePos - 0.15f;
+            zPos = _waterfallPlus ? _lastNotePos + 0.35f : _lastNotePos - 0.35f;
             if (zPos > 3)
             {
-                zPos -= 0.3f;
+                zPos -= 0.7f;   // 增大waterfall的间距
                 _waterfallPlus = false;
             }
             if (zPos < 0)
             {
-                zPos += 0.3f;
+                zPos += 0.7f;
                 _waterfallPlus = true;
             }
         }else if (isSmallNote)
         {
             if (i % 4 == 0)
             {
-                zPos = 0.8f + Random.value * 0.7f;
+                zPos = 0.5f + Random.value * 1f;
             }else if (i % 2 == 0)
             {
-                zPos = 1.5f + Random.value * 0.7f;
+                zPos = 1.5f + Random.value * 1f;
             }
             else
             {
-                zPos = _lastNotePos + Random.value * 0.4f - 0.2f;
+                zPos = _lastNotePos + Random.value * 1.2f - 0.6f;   // 夸大幅度
+                zPos = zPos > 3f ? 3f : zPos < 0 ? 0 : zPos;
             }
             
         }
         else
         {
             _waterfallPlus = Random.value > 0.5;
-            zPos = Random.value < 0.7f ? ((i % 2 == 0 ? 0 : 2f) + Random.value * 1f) : Random.value * 3;
+            zPos = Random.value < 0.7f ? ((i % 2 == 0 ? 0 : 2f) + Random.value * 1f) : (Random.value + 1f);
         }
 
         _lastNotePos = zPos;
@@ -384,11 +398,12 @@ public class GameController : MonoBehaviour
             {
                 var s = Instantiate(step);
                 var last = _noteSteps[i - 1].transform.position;
-                var isSmallNote = _notes[i - 1] < 1;
-                var isWaterfall = _notes[i - 1] < 0.5;
+                var lastNote = i == 1 ? _absoluteInitialSpace : _notes[i - 2];
+                var isSmallNote = (_notes[i - 1] - lastNote) / 60 * _bpm < 0.75;
+                var isWaterfall = (_notes[i - 1] - lastNote) / 60 * _bpm < 0.4;
 
                 var zPos = _generateZPos(isWaterfall, isSmallNote, i);
-                s.transform.position = new Vector3(last.x + ballSpeed * _notes[i - 1] / _bpm * 60.0f, last.y,  zPos);
+                s.transform.position = new Vector3(last.x + ballSpeed * (_notes[i - 1] - lastNote), last.y,  zPos);
                 s.SetActive(true);
                 _noteSteps.Add(s);
             }
@@ -401,10 +416,11 @@ public class GameController : MonoBehaviour
             }
             var s = Instantiate(step);
             var last = _noteSteps[_noteSteps.Count - 1].transform.position;
-            var isSmallNote = _notes[_noteSteps.Count - 1] < 1;
-            var isWaterfall = _notes[_noteSteps.Count - 1] < 0.5;
+            var lastNote =  _notes[_noteSteps.Count - 2];
+            var isSmallNote = (_notes[_noteSteps.Count - 1] - lastNote)  / 60 * _bpm < 0.75;
+            var isWaterfall = (_notes[_noteSteps.Count - 1] - lastNote)  / 60 * _bpm < 0.4;
             var zPos = _generateZPos(isWaterfall, isSmallNote, _noteSteps.Count - 1);
-            s.transform.position = new Vector3(last.x + ballSpeed * _notes[_noteSteps.Count - 1] / _bpm * 60.0f, last.y, zPos);
+            s.transform.position = new Vector3(last.x + ballSpeed * (_notes[_noteSteps.Count - 1] - lastNote), last.y, zPos);
             s.SetActive(true);
             _noteSteps.Add(s);
         }
@@ -413,24 +429,22 @@ public class GameController : MonoBehaviour
     private void Fly()
     {
         var nextPos = _nextStep.transform.position;
-        nextPos = StaticClass.Auto ? new Vector3(nextPos.x, _initialBallHeight, nextPos.z) : new Vector3(nextPos.x, _initialBallHeight, ball.transform.position.z);
-        ball.transform.DOKill();
-        var dur = _nextNoteIndex <= 0 ? _initialSpace : _nextNoteTime - Time.time;
+        var thisPos = ball.transform.position;
+        
+        nextPos = StaticClass.Auto ? new Vector3(nextPos.x, _initialBallHeight, nextPos.z) : new Vector3(nextPos.x, _initialBallHeight, thisPos.z);
+        // ball.transform.DOKill();
+        var dur = _nextNoteTime - Time.time;
         
         // ball.transform.DOJump(nextPos, _nextNoteIndex <= 0 ? verticalSpeed * 2 : verticalSpeed, 1, dur);
-
-        if (_nextNoteIndex > 0)
-        {
-            var thisPos = ball.transform.position;
-            _time = dur;
-            _g = g / _notes[_nextNoteIndex - 1] * _bpm / 90f;
-            // 通过一个式子计算初速度
-            _speed = new Vector3((nextPos.x - thisPos.x) / _time,
-                (nextPos.y - thisPos.y) / _time - 0.5f * _g * _time, (nextPos.z - thisPos.z) / _time);
-            // 重力初始速度为0
-            _gravitySpeed = Vector3.zero;
-            _dTime = 0;
-        }
+        _time = dur;
+        var last = _nextNoteIndex > 1 ? _notes[_nextNoteIndex - 2] : _absoluteInitialSpace;
+        _g = _nextNoteIndex > 0 ? g / (_notes[_nextNoteIndex - 1] - last) / 1.5f : g / _initialSpace / 1.5f;
+        // 通过一个式子计算初速度
+        _speed = new Vector3((nextPos.x - thisPos.x) / _time,
+            (nextPos.y - thisPos.y) / _time - 0.5f * _g * _time, (nextPos.z - thisPos.z) / _time);
+        // 重力初始速度为0
+        _gravitySpeed = Vector3.zero;
+        _dTime = 0;
 
         // 自动算下一个
         // _lastNodeTime = _nextNoteTime;
@@ -448,39 +462,80 @@ public class GameController : MonoBehaviour
         var ballPos = ball.transform.position;
         var dis = ballPos.z - blockPos.z;
         var radius = (_nextStep.transform.localScale.z / 2);
-        if (dis * dis > radius * radius * 1.69f && _nextNoteIndex < _notes.Count)
+        beatEffect.Play();
+        if (dis * dis > radius * radius * 2.25f && _nextNoteIndex < _notes.Count)
         {
             // 更不容易死一点但...
-            _isGameOver = true;
-            _failed = true;
-            OnFail();
+            _hp -= 1;
+
+
+            const string hpItem = "❤";
+            var t = "";
+            for (var i = 0; i < _hp; i++)
+            {
+                t += hpItem;
+            }
+
+            hpText.text = t;
+            if (_hp <= 0)
+            {
+                _isGameOver = true;
+                OnFail();
+            }
+            else
+            {
+                // 坠落
+                ShowFeedback(_nextStep, 0);
+            }
         }
         else
         {
-            if (dis * dis > radius * radius)
+            if (dis * dis > radius * radius * 1f)
             {
+                // 偏移
                 ShowFeedback(_nextStep, 1);
             }
-            else if (dis * dis > radius * radius / 4f)
+            else if (dis * dis > radius * radius * 0.49f)
             {
+                // 普通
                 ShowFeedback(_nextStep, 2);
             }
             else
             {
+                // 精准
                 ShowFeedback(_nextStep, 3);
             }
+        }
+
+        if (_hp >= 1)
+        {
             if (_nextNoteIndex >= _notes.Count)
             {
                 _isGameOver = true;
                 var newRecord = HandleScore();
-                if (newRecord)
+                if (_combos == _notes.Count)
                 {
-                    countDown.text = "FC New Record!!!\n" + score.text;
+                    if (newRecord)
+                    {
+                        countDown.text = "New FC!!!\n" + score.text;
+                    }
+                    else
+                    {
+                        countDown.text = "Full Combo!!!\n" + score.text;
+                    }
                 }
                 else
                 {
-                    countDown.text = "FULL COMBO!!!\n" + score.text;
+                    if (newRecord)
+                    {
+                        countDown.text = "New Record!!!\n" + score.text;
+                    }
+                    else
+                    {
+                        countDown.text = score.text;
+                    }
                 }
+                
                 
                 StartCoroutine(GoBack());
             }
@@ -489,7 +544,7 @@ public class GameController : MonoBehaviour
                 // 可以销毁
                 Destroy(_nextStep,2.0f);
                 DoNext();
-            }
+            }   
         }
     }
 
@@ -508,24 +563,37 @@ public class GameController : MonoBehaviour
         {
             _currentCharMesh.text = "Perfect!";
             _currentCharMesh.color = new Color(0.95f, 0.69f, 0.15f);
-            _score += 1000000f / _notes.Count;
+            _score += 1000f * (1 + _combos / 100f);
+            _noteSteps[_nextNoteIndex].GetComponent<MeshRenderer>().material.mainTextureScale = new Vector2(0.03f, 1);
+            _combos += 1;
         }
         else if (status == 2)
         {
             _currentCharMesh.text = "Great!";
             _currentCharMesh.color = new Color(0.21f, 0.63f, 0.8f);
-            _score += 1000000f / _notes.Count * 0.7f;
+            _score += 1000f * (1 + _combos / 100f) * 0.6f;
+            _noteSteps[_nextNoteIndex].GetComponent<MeshRenderer>().material.mainTextureScale = new Vector2(0.05f, 1);
+            _combos += 1;
         }
-        else
+        else if (status == 1)
         {
             _currentCharMesh.text = "Ok";
             _currentCharMesh.color = new Color(0.6f, 0.8f, 0.5f);
-            _score += 1000000f / _notes.Count * 0.4f;
+            _score += 1000f * (1 + _combos / 100f) * 0.2f;
+            _noteSteps[_nextNoteIndex].GetComponent<MeshRenderer>().material.mainTextureScale = new Vector2(0.08f, 1);
+            _combos += 1;
+        }
+        else
+        {
+            _currentCharMesh.text = "Fail";
+            _currentCharMesh.color = new Color(0.6f, 0.8f, 0.5f);
+            _noteSteps[_nextNoteIndex].GetComponent<MeshRenderer>().material.color = new Color(191 / 255f, 2 / 255f, 0);
+            _combos = 0;
         }
         
-        _combos += 1;
+        
         score.text = Convert.ToInt32(_score).ToString().PadLeft(7, '0');
-        combos.text = _combos.ToString() + (_combos > 1 ? " Combos" : "Combo");
+        combos.text = _combos.ToString() + (_combos > 1 ? " Combos" : " Combo");
 
         _charLeftTime = 0.3f;
         _charEnlargeSpeed = feedbackCharSize / _charLeftTime;
@@ -554,9 +622,9 @@ public class GameController : MonoBehaviour
     private bool HandleScore()
     {
         if (StaticClass.Auto) return false;
-        if (PlayerPrefs.GetFloat("high-score-" + StaticClass.Name) < _score)
+        if (PlayerPrefs.GetFloat("high-score-" + _osuSongInfo.BeatmapID) < _score)
         {
-            PlayerPrefs.SetFloat("high-score-" + StaticClass.Name, _score);
+            PlayerPrefs.SetFloat("high-score-" + _osuSongInfo.BeatmapID, _score);
             return true;
         }
 

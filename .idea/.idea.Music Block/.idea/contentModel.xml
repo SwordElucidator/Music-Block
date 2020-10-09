@@ -81,6 +81,7 @@
           </e>
         </e>
         <e p="Scripts" t="Include">
+          <e p="DropController.cs" t="Include" />
           <e p="GameController.cs" t="Include" />
           <e p="OsuLoader.cs" t="Include" />
           <e p="Star.cs" t="Include" />
