@@ -74,8 +74,11 @@ public class GameController : MonoBehaviour
     private Vector3 _speed;       // 初速度向量
     private Vector3 _gravitySpeed;     // 重力向量
     private Vector3 _currentAngle;// 当前角度
-    private float _time = 0;
     private float _dTime = 0;
+    
+    // 急停模型
+    private float _augUntil = 0f;
+    private float _desStart = 0f;
     
     // 文字模型
     private float _charSize = 0;
@@ -89,7 +92,6 @@ public class GameController : MonoBehaviour
     // osu模型
     private SongInfo _osuSongInfo;
     private bool loaded = false;
-    private double _initialDspTime;
     private float _initialTime;
     
     // Start is called before the first frame update
@@ -181,17 +183,33 @@ public class GameController : MonoBehaviour
         {
             return;
         }
-        // v=gt
-        _gravitySpeed.y = _g * (_dTime += Time.fixedDeltaTime);
+        
+        // 急停机制
+        if (Time.time >= _augUntil && Time.time < _desStart)
+        {
+            // 横飞
+            ball.transform.position += new Vector3(ballSpeed, 0, 0) * Time.fixedDeltaTime;
+        }
+        else
+        {
+            // v=gt
+            _gravitySpeed.y = _g * (_dTime += Time.fixedDeltaTime);
 
-        //模拟位移
-        ball.transform.position += (_speed + _gravitySpeed) * Time.fixedDeltaTime;
+            //模拟位移
+            ball.transform.position += (_speed + _gravitySpeed) * Time.fixedDeltaTime;
+            if (ball.transform.position.y < _nextStep.transform.position.y)
+            {
+                var position = ball.transform.position;
+                position = new Vector3(position.x, _nextStep.transform.position.y, position.z);
+                ball.transform.position = position;
+            }
 
-        // 弧度转度：Mathf.Rad2Deg
-        _currentAngle.x = -Mathf.Atan((_speed.y + _gravitySpeed.y) / _speed.z) * Mathf.Rad2Deg;
+            // 弧度转度：Mathf.Rad2Deg
+            _currentAngle.x = -Mathf.Atan((_speed.y + _gravitySpeed.y) / _speed.z) * Mathf.Rad2Deg;
 
-        // 设置当前角度
-        ball.transform.eulerAngles = _currentAngle;
+            // 设置当前角度
+            ball.transform.eulerAngles = _currentAngle;
+        }
 
         if (_charLeftTime > 0f)
         {
@@ -223,7 +241,7 @@ public class GameController : MonoBehaviour
 
     private async void LoadScript()
     {
-        const float emptyBgmTime = 1;
+        var emptyBgmTime = 1f;
         if (StaticClass.IsOsu)
         {
             _osuSongInfo = StaticClass.Loader.DeepRead();
@@ -233,7 +251,8 @@ public class GameController : MonoBehaviour
                 bg.GetComponent<AspectRatioFitter>().aspectRatio = (float)StaticClass.imageTex.width / StaticClass.imageTex.height;      
             }
             bgmAudio.clip = await StaticClass.Loader.GetBgm(_osuSongInfo.AudioFilename);
-            _bpm = _osuSongInfo.TimingPoints[0].bpm;  // TODO
+            _bpm = _osuSongInfo.TimingPoints[0].bpm;
+            // emptyBgmTime = _osuSongInfo.AudioLeadIn / 1000f;
             // _osuSongInfo.AudioLeadIn;   概念：audio进入时间
             
             // _initialSpace 从播放audio起，第一个音符前的等待时间
@@ -247,6 +266,7 @@ public class GameController : MonoBehaviour
                 if (first) {first = false; _initialSpace = i / 1000f; _absoluteInitialSpace = _initialSpace; continue;}
                 _notes.Add(i / 1000f);
             }
+            // 已经确定谱子准确
         }
         else
         {
@@ -276,28 +296,60 @@ public class GameController : MonoBehaviour
                 lastTime = next;
             }
         }
+        
+        bgmAudio.Play();
+        bgmAudio.Pause();
+
+        StartCoroutine(WaitUntilInitial(emptyBgmTime));
+
+    }
+
+    private IEnumerator WaitUntilInitial(float emptyBgmTime)
+    {
+        while (bgmAudio.clip.loadState != AudioDataLoadState.Loaded)
+        {
+            // print("load audio");
+            yield return new WaitForSeconds(0.1f);
+        }
+        
         // 起步倒计时
-        _initialDspTime = AudioSettings.dspTime;
-        _initialTime = Time.time;
+        _initialTime = Time.time;  // 开始时间
+        // print(_initialTime);
+        // print(emptyBgmTime);
         // print(_initialSpace);
+        
+        // _absoluteInitialSpace = 第一拍子在BGM开始后的时间
+        
         if (_initialSpace + emptyBgmTime < 60.0f / _bpm * 3)  // 小于3拍
         {
             // print("种类0");
-            // 小于早期节拍   90(2秒） 0.18 + 1 < 2
-            // bgmAudio.PlayScheduled(_initialDspTime + 60.0f / _bpm * 3 - _initialSpace);
-            bgmAudio.PlayDelayed(60.0f / _bpm * 3 - _initialSpace + StaticClass.SmallDelay);
+            // 小于早期节拍   90(2秒） 0.18 + 1 < 2=
+            StartCoroutine(WaitUntilUnpause(60.0f / _bpm * 3 - _initialSpace - StaticClass.SmallDelay));
+            // bgmAudio.PlayDelayed(60.0f / _bpm * 3 - _initialSpace - StaticClass.SmallDelay);
             _initialSpace = 60.0f / _bpm * 3;
             _countdownStart = 0;
         }
         else
         {
             // print("种类1");
+            
             _initialSpace += emptyBgmTime;  // 初始时长 + 1秒
+            // _initialSpace = 第一拍子在BGM开始后的时间 + BGM不播放的时间【从_initialTime算起的话，_initialTime + _initialSpace应该就是第一拍的时间】
+            
             _countdownStart = _initialSpace - 60.0f / _bpm * 3;
-            // bgmAudio.PlayScheduled(_initialDspTime + emptyBgmTime);
-            bgmAudio.PlayDelayed(emptyBgmTime + StaticClass.SmallDelay);
+            // 跑拍时间：_initialTime + _countdownStart的时候
+
+            StartCoroutine(WaitUntilUnpause(emptyBgmTime - StaticClass.SmallDelay));
+            // bgmAudio.PlayDelayed();  // 从_initialTime + emptyBgmTime时开始播放
         }
         InitializeBall();
+    }
+
+    private IEnumerator WaitUntilUnpause(float time)
+    {
+        yield return new WaitForSeconds(time);
+        bgmAudio.time = 0;
+        bgmAudio.UnPause();
     }
 
     private void InitializeBall()
@@ -310,10 +362,12 @@ public class GameController : MonoBehaviour
         _cameraOffset = cameraPosition - pos;
         _cameraY = cameraPosition.y;
         _cameraZ = cameraPosition.z;
-        GenerateSteps();
-        _nextStep = _noteSteps[0];
+        GenerateSteps();   // 已算过无误
+        
+        
+        _nextStep = _noteSteps[0];  // 第0步
         _nextNoteIndex = 0;
-        _nextNoteTime = _initialSpace + _initialTime;
+        _nextNoteTime = _initialSpace + _initialTime;   // 目标时间
         _ps = ball.GetComponent<ParticleSystem>();
         loaded = true;
         StartCoroutine(InitialNote());
@@ -389,20 +443,23 @@ public class GameController : MonoBehaviour
         if (_nextNoteIndex <= 0)
         {
             // 第一次做
-            var firstStep = Instantiate(step);
+            var firstStep = Instantiate(step);  // 0位置，第一次撞击，InitialStep位置
             firstStep.SetActive(true);
             _noteSteps = new List<GameObject> {firstStep};
             _lastNotePos = 0;
 
             for (var i = 1; i < Math.Min(15, _notes.Count + 1); i++)
             {
+                // 开始做第一个板砖（第一个的位置）
                 var s = Instantiate(step);
-                var last = _noteSteps[i - 1].transform.position;
-                var lastNote = i == 1 ? _absoluteInitialSpace : _notes[i - 2];
+                var last = _noteSteps[i - 1].transform.position;   // 上一个的位置
+                var lastNote = i == 1 ? _absoluteInitialSpace : _notes[i - 2];  // 上一个note，因为notes从第1个开始，如果是step 1，是开始空间（比如1.355）；如果是第2个，是notes[0]，比如1.73
+                
                 var isSmallNote = (_notes[i - 1] - lastNote) / 60 * _bpm < 0.75;
                 var isWaterfall = (_notes[i - 1] - lastNote) / 60 * _bpm < 0.4;
 
                 var zPos = _generateZPos(isWaterfall, isSmallNote, i);
+                
                 s.transform.position = new Vector3(last.x + ballSpeed * (_notes[i - 1] - lastNote), last.y,  zPos);
                 s.SetActive(true);
                 _noteSteps.Add(s);
@@ -432,23 +489,37 @@ public class GameController : MonoBehaviour
         var thisPos = ball.transform.position;
         
         nextPos = StaticClass.Auto ? new Vector3(nextPos.x, _initialBallHeight, nextPos.z) : new Vector3(nextPos.x, _initialBallHeight, thisPos.z);
-        // ball.transform.DOKill();
-        var dur = _nextNoteTime - Time.time;
         
-        // ball.transform.DOJump(nextPos, _nextNoteIndex <= 0 ? verticalSpeed * 2 : verticalSpeed, 1, dur);
-        _time = dur;
-        var last = _nextNoteIndex > 1 ? _notes[_nextNoteIndex - 2] : _absoluteInitialSpace;
-        _g = _nextNoteIndex > 0 ? g / (_notes[_nextNoteIndex - 1] - last) / 1.5f : g / _initialSpace / 1.5f;
-        // 通过一个式子计算初速度
-        _speed = new Vector3((nextPos.x - thisPos.x) / _time,
-            (nextPos.y - thisPos.y) / _time - 0.5f * _g * _time, (nextPos.z - thisPos.z) / _time);
-        // 重力初始速度为0
-        _gravitySpeed = Vector3.zero;
-        _dTime = 0;
+        
+        var dur = _nextNoteTime - Time.time;   // 飞这么久
 
-        // 自动算下一个
-        // _lastNodeTime = _nextNoteTime;
-        // 走你
+
+        // 超自然模型（即永远只行为1/8拍，固定结果高度，平飞行，直到前1/8时，再次下降，该模型下G不变）
+        var standardDur = 60f / _bpm / 2f;  // 1/2拍子
+
+        if (standardDur * 2 < dur * 1.1f)
+        {
+            _g = g / standardDur * 1f;
+            _speed = new Vector3(ballSpeed, 
+                - 0.5f * _g * (standardDur * 2), (nextPos.z - thisPos.z) / (standardDur * 2));
+            _gravitySpeed = Vector3.zero;
+            _dTime = 0;
+            _augUntil = Time.time + standardDur;
+            _desStart = _nextNoteTime - standardDur;
+        }
+        else
+        {
+            // 重力模型
+            _g = _nextNoteIndex > 0 ? g / dur : g / _initialSpace;
+            // 通过一个式子计算初速度
+            _speed = new Vector3((nextPos.x - thisPos.x) / dur,
+                (nextPos.y - thisPos.y) / dur - 0.5f * _g * dur, (nextPos.z - thisPos.z) / dur);
+            // 重力初始速度为0
+            _gravitySpeed = Vector3.zero;
+            _dTime = 0;
+            _augUntil = 0;
+            _desStart = 0;
+        }
 
         StartCoroutine(DoAutoJump(dur));
         
@@ -458,6 +529,7 @@ public class GameController : MonoBehaviour
     {
         yield return new WaitForSeconds(dur);
         // 判断位置
+        // print(Time.time);
         var blockPos = _nextStep.transform.position;
         var ballPos = ball.transform.position;
         var dis = ballPos.z - blockPos.z;
@@ -590,6 +662,14 @@ public class GameController : MonoBehaviour
             _noteSteps[_nextNoteIndex].GetComponent<MeshRenderer>().material.color = new Color(191 / 255f, 2 / 255f, 0);
             _combos = 0;
         }
+
+        if (status > 0)
+        {
+            var pos = _noteSteps[_nextNoteIndex].transform.position;
+            _noteSteps[_nextNoteIndex].transform.DOMove(new Vector3(pos.x, pos.y - 0.2f, pos.z), 60f / _bpm / 8);
+            StartCoroutine(RecoverPlace(_noteSteps[_nextNoteIndex].transform));
+
+        }
         
         
         score.text = Convert.ToInt32(_score).ToString().PadLeft(7, '0');
@@ -597,6 +677,13 @@ public class GameController : MonoBehaviour
 
         _charLeftTime = 0.3f;
         _charEnlargeSpeed = feedbackCharSize / _charLeftTime;
+    }
+
+    private IEnumerator RecoverPlace(Transform trans)
+    {
+        yield return new WaitForSeconds(60f / _bpm / 8);
+        var pos = trans.position;
+        trans.DOMove(new Vector3(pos.x, pos.y + 0.1f, pos.z), 60f / _bpm / 8);
     }
     
 

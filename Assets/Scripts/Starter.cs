@@ -17,7 +17,7 @@ public static class StaticClass {
     
     public static OsuLoader Loader { get; set; }
     public static bool Auto { get; set; } = false;
-    
+
     public static string Name { get; set; }
     
     public static Texture imageTex { get; set; }
@@ -46,7 +46,8 @@ public class Starter : MonoBehaviour
     public Transform firstMapButton;
 
     public Toggle autoToggle;
-
+    public Toggle dropToggle;
+    
     public Slider sens;
     public Slider delay;
     // public bool auto = false;
@@ -72,6 +73,7 @@ public class Starter : MonoBehaviour
     {
         sens.value = PlayerPrefs.HasKey("sens") ? PlayerPrefs.GetFloat("sens") : StaticClass.Sensibility;
         delay.value = PlayerPrefs.HasKey("delay") ? PlayerPrefs.GetFloat("delay") : StaticClass.SmallDelay;
+        dropToggle.isOn = PlayerPrefs.HasKey("drop") && PlayerPrefs.GetInt("drop") == 1;
 
         var fullPath = Path.Combine(Application.persistentDataPath, "songs");  
         
@@ -261,7 +263,8 @@ public class Starter : MonoBehaviour
             StaticClass.Loader = _loaderDict[obj.GetComponent<Button>()];
             PlayerPrefs.SetFloat("sens", StaticClass.Sensibility);
             PlayerPrefs.SetFloat("delay", StaticClass.SmallDelay);
-            SceneManager.LoadScene("Music");
+            PlayerPrefs.SetInt("drop", dropToggle.isOn ? 1 : 0);
+            SceneManager.LoadScene(dropToggle.isOn ? "Drop" : "Music");
         }
         else
         {
@@ -283,7 +286,8 @@ public class Starter : MonoBehaviour
                     StaticClass.Loader = null;
                     PlayerPrefs.SetFloat("sens", StaticClass.Sensibility);
                     PlayerPrefs.SetFloat("delay", StaticClass.SmallDelay);
-                    SceneManager.LoadScene("Music");
+                    PlayerPrefs.SetInt("drop", dropToggle.isOn ? 1 : 0);
+                    SceneManager.LoadScene(dropToggle.isOn ? "Drop" : "Music");
                     break;
                 }
             }
