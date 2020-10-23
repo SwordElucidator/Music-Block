@@ -2,19 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2be46bf8-7c84-4fb9-a53d-7124be47b3a6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/indexLayout.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Music Block/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Materials.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Materials/Drop.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Materials/Drop.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/effect/soft-hitnormalh.wav.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/effect/soft-hitnormalh.wav.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Drop.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Drop.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Music.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Music.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Title.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Title.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/DropController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/DropController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/OsuLoader.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/OsuLoader.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Starter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Starter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/AudioManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/AudioManager.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +19,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/SpaceSkies Free/Demo/Scripts/LookCamera.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Starter.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/SpaceSkies Free/Demo/Scripts/SkyboxChanger.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scenes/Drop.unity" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/AE57EEF0-A375-4E48-AB3D-FE6092C9EF3D/7c/8ef93d74/AudioSettings.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3EAFBE1D-22CF-4565-A6A1-DF7DE10101D6/b3/b618123d/ShortcutExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3D496C8E-82AE-4EBD-B5D2-754C57C486CF/35/e32fa418/TextAsset.cs" root0="SKIP_HIGHLIGHTING" />
@@ -51,6 +43,7 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/OsuLoader.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/GameController.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/DropController.cs" />
+        <option value="$PROJECT_DIR$/../../Dropping Cat/Assets/Person.cs" />
       </list>
     </option>
   </component>
@@ -104,7 +97,7 @@
       <workItem from="1601006095630" duration="66880000" />
       <workItem from="1601701473213" duration="23056000" />
       <workItem from="1602245555793" duration="14441000" />
-      <workItem from="1603270869431" duration="18091000" />
+      <workItem from="1603270869431" duration="20180000" />
     </task>
     <servers />
   </component>

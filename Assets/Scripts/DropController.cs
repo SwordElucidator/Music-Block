@@ -168,10 +168,18 @@ public class DropController : MonoBehaviour
     private void MakeSteps()
     {
         if (_nextNoteIndex >= _notes.Count) return;
+        var lastLine = 5;
         for (var i = _nextNoteIndex; i < Math.Min(_nextNoteIndex + 30, _notes.Count); i++)
         {
             // 先放30个
-            CreateSingleCube((int)Math.Floor(Random.value * lines.Length), _initialTime +  _notes[i] - _absoluteInitialSpace + _initialSpace);
+            var line = (int) Math.Floor(Random.value * lines.Length);
+            while (line == lastLine)
+            {
+                line = (int) Math.Floor(Random.value * lines.Length);
+            }
+
+            lastLine = line;
+            CreateSingleCube(line, _initialTime +  _notes[i] - _absoluteInitialSpace + _initialSpace);
             _leftNoteCount += 1;
         }
 
